@@ -1,6 +1,8 @@
 allowBuilds:
   sharp: false
   unrs-resolver: false
+enableSupplyChainSecurity: false
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+minimumReleaseAge: 0
