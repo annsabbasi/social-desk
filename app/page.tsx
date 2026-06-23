@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, Plus } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Plus } from "lucide-react";
 import { DashboardMockup } from "@/components/dashboard-mockup";
 import { SocialComposerSandbox } from "@/components/social-composer-sandbox";
 
@@ -194,8 +194,8 @@ function Heading({
 }) {
   const sizes = { xl: "text-[52px] md:text-[68px] lg:text-[84px]", lg: "text-[40px] md:text-[52px] lg:text-[60px]", md: "text-[32px] md:text-[42px] lg:text-[48px]", sm: "text-[24px] md:text-[30px]" };
   return (
-    <h2 className={`font-light leading-[0.95] tracking-[-0.02em] ${sizes[size]} ${className}`}
-      style={{ color: light ? C.ivory : C.ink, fontFamily: "var(--font-cormorant)" }}>
+    <h2 className={`font-extrabold leading-[0.9] tracking-tight ${sizes[size]} ${className}`}
+      style={{ color: light ? C.ivory : C.ink, fontFamily: "var(--font-display)" }}>
       {children}
     </h2>
   );
@@ -215,8 +215,8 @@ function CapRow({ n, title, tag, body, idx }: typeof CAPABILITIES[0] & { idx: nu
       <div className="grid grid-cols-12 gap-4 md:gap-8 items-baseline">
         <span className="col-span-2 md:col-span-1 text-[10px] tracking-[0.2em] uppercase"
           style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>{n}</span>
-        <h3 className="col-span-10 md:col-span-3 text-[22px] md:text-[26px] font-light transition-all duration-500 group-hover:italic"
-          style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>{title}</h3>
+        <h3 className="col-span-10 md:col-span-3 text-[20px] md:text-[24px] font-extrabold tracking-tight"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{title}</h3>
         <p className="col-span-12 md:col-span-6 md:pl-4 text-[14px] leading-[1.8]"
           style={{ color: C.muted }}>{body}</p>
         <div className="col-span-12 md:col-span-2 flex md:justify-end">
@@ -247,8 +247,8 @@ function CaseStudyRow({ cs, idx }: { cs: typeof CASE_STUDIES[0]; idx: number }) 
             </span>
             <span className="text-[11px]" style={{ color: C.subtle }}>{cs.type}</span>
           </div>
-          <p className="text-[26px] md:text-[32px] lg:text-[36px] font-light italic leading-[1.3] mb-8"
-            style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>
+          <p className="text-[22px] md:text-[26px] lg:text-[30px] font-semibold leading-[1.4] mb-8"
+            style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
             &ldquo;{cs.quote}&rdquo;
           </p>
           <div className="flex items-center gap-4 mb-10">
@@ -262,8 +262,8 @@ function CaseStudyRow({ cs, idx }: { cs: typeof CASE_STUDIES[0]; idx: number }) 
             </div>
           </div>
           <div className="flex items-baseline gap-3">
-            <span className="text-[52px] md:text-[64px] font-light leading-none"
-              style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>
+            <span className="text-[52px] md:text-[64px] font-black leading-none"
+              style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
               {cs.metric.split(" ")[0]}
             </span>
             <span className="text-[13px] leading-snug max-w-[120px]"
@@ -283,7 +283,7 @@ function CaseStudyRow({ cs, idx }: { cs: typeof CASE_STUDIES[0]; idx: number }) 
             <div className="p-8" style={{ background: C.cream }}>
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <p className="text-[18px] font-light" style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>
+                  <p className="text-[18px] font-bold" style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
                     {cs.client}
                   </p>
                   <p className="text-[11px] tracking-[0.12em] uppercase mt-1"
@@ -325,12 +325,12 @@ function TimelineItem({ year, headline, body, idx }: typeof TIMELINE[0] & { idx:
       style={{ borderColor: C.border }}
       initial="hidden" animate={inView ? "visible" : "hidden"} custom={idx * 0.1} variants={vFadeUp}>
       <div className="col-span-12 md:col-span-2">
-        <span className="text-[40px] md:text-[52px] font-light leading-none"
-          style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>{year}</span>
+        <span className="text-[40px] md:text-[52px] font-black leading-none"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{year}</span>
       </div>
       <div className="col-span-12 md:col-span-3 md:pt-3">
-        <p className="text-[20px] md:text-[24px] font-light"
-          style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>{headline}</p>
+        <p className="text-[20px] md:text-[24px] font-bold"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{headline}</p>
       </div>
       <div className="col-span-12 md:col-span-7 md:pt-3">
         <p className="text-[14px] leading-[1.85]" style={{ color: C.muted }}>{body}</p>
@@ -347,8 +347,8 @@ function FaqItem({ q, a, idx, open, onToggle }: typeof FAQS[0] & { idx: number; 
       initial="hidden" animate={inView ? "visible" : "hidden"} custom={idx * 0.07} variants={vFadeUp}>
       <button onClick={onToggle}
         className="w-full flex items-start justify-between py-7 text-left gap-6 group">
-        <span className="text-[18px] md:text-[22px] font-light flex-1 group-hover:opacity-60 transition-opacity duration-300"
-          style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>{q}</span>
+        <span className="text-[17px] md:text-[20px] font-bold flex-1 group-hover:opacity-60 transition-opacity duration-300"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{q}</span>
         <motion.div animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.3, ease: EASE_SOFT }}>
           <Plus style={{ width: 16, height: 16, color: C.subtle, marginTop: 4, flexShrink: 0 }} />
         </motion.div>
@@ -388,14 +388,14 @@ export default function Home() {
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
-  const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubscribe = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email.trim()) return;
     setSubscribed(true);
     setEmail("");
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormSent(true);
   };
@@ -469,19 +469,24 @@ export default function Home() {
 
           {/* Main headline */}
           <div className="max-w-[1100px]">
-            {["Command", "Every Voice.", "Own Every", "Channel."].map((word, i) => (
+            {[
+              { text: "Command",     accent: false },
+              { text: "Every",       accent: false },
+              { text: "Voice.",      accent: true  },
+              { text: "Own Every",   accent: false },
+              { text: "Channel.",    accent: true  },
+            ].map(({ text, accent }, i) => (
               <div key={i} className="overflow-hidden">
-                <motion.span className="block font-light leading-[0.9] tracking-[-0.025em]"
+                <motion.span className="block font-black leading-[0.88] tracking-tight"
                   style={{
-                    fontFamily: "var(--font-cormorant)",
-                    color: C.ivory,
-                    fontSize: "clamp(64px, 9vw, 132px)",
-                    fontStyle: i >= 2 ? "italic" : "normal",
+                    fontFamily: "var(--font-display)",
+                    color: accent ? C.bronze : C.ivory,
+                    fontSize: "clamp(56px, 8.5vw, 124px)",
                   }}
                   initial={{ y: "110%", opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 1.1, ease: EASE, delay: 0.4 + i * 0.12 }}>
-                  {word}
+                  transition={{ duration: 1.0, ease: EASE, delay: 0.4 + i * 0.1 }}>
+                  {text}
                 </motion.span>
               </div>
             ))}
@@ -498,8 +503,8 @@ export default function Home() {
             <div className="grid grid-cols-3 gap-10">
               {[["12,000+", "Social Teams"], ["7", "Platforms"], ["99.9%", "Uptime SLA"]].map(([v, l]) => (
                 <div key={l}>
-                  <p className="text-[36px] md:text-[44px] font-light leading-none"
-                    style={{ color: C.ivory, fontFamily: "var(--font-cormorant)" }}>{v}</p>
+                  <p className="text-[36px] md:text-[44px] font-black leading-none"
+                    style={{ color: C.ivory, fontFamily: "var(--font-display)" }}>{v}</p>
                   <p className="text-[10px] tracking-[0.2em] uppercase mt-2"
                     style={{ color: `${C.ivory}40`, fontFamily: "var(--font-dm-sans)" }}>{l}</p>
                 </div>
@@ -568,8 +573,8 @@ export default function Home() {
               variants={vSlideLeft} custom={0}>
               <Label>The Company</Label>
               <Heading size="lg" className="mb-10">
-                We didn&apos;t build another dashboard.
-                <span className="italic"> We built a command centre.</span>
+                We didn&apos;t build another dashboard.{" "}
+                <span style={{ color: C.bronze }}>We built a command centre.</span>
               </Heading>
               <p className="text-[15px] leading-[1.85] mb-8" style={{ color: C.muted }}>
                 Social media management has always meant switching between apps, missing messages, and losing hours to admin. SocialDesk changes that — one unified workspace for every platform, every conversation, every metric.
@@ -595,17 +600,18 @@ export default function Home() {
                       ["99.9%", "Uptime SLA"],
                     ].map(([val, lbl]) => (
                       <div key={lbl} className="border-l pl-6" style={{ borderColor: C.border }}>
-                        <p className="text-[42px] md:text-[52px] font-light leading-none"
-                          style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>{val}</p>
+                        <p className="text-[42px] md:text-[52px] font-black leading-none"
+                          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{val}</p>
                         <p className="text-[10px] tracking-[0.2em] uppercase mt-2"
                           style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>{lbl}</p>
                       </div>
                     ))}
                   </div>
                   <Divider />
-                  <p className="text-[20px] md:text-[24px] font-light italic leading-[1.4] mt-10"
-                    style={{ color: C.ink, fontFamily: "var(--font-cormorant)" }}>
-                    &ldquo;One platform. Every channel. Infinite clarity.&rdquo;
+                  <p className="text-[20px] md:text-[24px] font-extrabold leading-[1.3] mt-10"
+                    style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
+                    &ldquo;One platform. Every channel.{" "}
+                    <span style={{ color: C.bronze }}>Infinite clarity.</span>&rdquo;
                   </p>
                 </div>
               </div>
@@ -762,8 +768,8 @@ export default function Home() {
                 </div>
                 <div className="mb-8">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-[52px] font-light leading-none"
-                      style={{ color: p.featured ? C.ivory : C.ink, fontFamily: "var(--font-cormorant)" }}>
+                    <span className="text-[52px] font-black leading-none"
+                      style={{ color: p.featured ? C.ivory : C.ink, fontFamily: "var(--font-display)" }}>
                       ${p[billing]}
                     </span>
                     <span className="text-[12px]" style={{ color: p.featured ? `${C.ivory}45` : C.subtle, fontFamily: "var(--font-dm-sans)" }}>/mo</span>
@@ -856,8 +862,8 @@ export default function Home() {
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vSlideRight} custom={0.15}>
               {formSent ? (
                 <div className="py-20 text-center">
-                  <p className="text-[44px] font-light mb-4"
-                    style={{ color: C.ivory, fontFamily: "var(--font-cormorant)" }}>Thank you.</p>
+                  <p className="text-[44px] font-extrabold mb-4"
+                    style={{ color: C.ivory, fontFamily: "var(--font-display)" }}>Thank you.</p>
                   <p className="text-[14px]" style={{ color: `${C.ivory}45` }}>We&apos;ll be in touch within 2 hours.</p>
                 </div>
               ) : (
@@ -919,7 +925,7 @@ export default function Home() {
             <Label>Begin Today</Label>
             <Heading size="xl" className="mb-10">
               Your Social Presence,<br />
-              <span className="italic">Perfectly Orchestrated.</span>
+              <span style={{ color: C.bronze }}>Perfectly Orchestrated.</span>
             </Heading>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <a href="#pricing"
