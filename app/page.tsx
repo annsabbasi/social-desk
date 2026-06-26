@@ -154,9 +154,9 @@ const PRICING = [
   {
     name: "Starter",
     tagline: "For creators and freelancers",
-    mo: 199, yr: "Free",
+    mo: "Free", yr: "Free",
     items: ["Up to 3 social profiles", "1 user seat", "100 scheduled posts/mo", "Basic analytics", "Standard support"],
-    cta: "Begin with Starter",
+    cta: "Get Started Free",
     featured: false,
   },
   {
@@ -381,8 +381,13 @@ export default function Home() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
+    const fn = () => setScrolled(window.scrollY > 30);
+    fn(); // run once on mount
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
@@ -408,21 +413,36 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           NAVIGATION
       ════════════════════════════════════════════════════════════════════ */}
-      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      <header
         style={{
-          background: C.ivory,
-          borderBottom: `1px solid ${C.border}`,
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
+          height: scrolled ? "64px" : "84px",
+          background: scrolled ? "#7A8B30" : C.bronze,
+          borderBottom: `1px solid rgba(255,255,255,0.1)`,
+          backdropFilter: scrolled ? "blur(14px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(14px)" : "none",
+          boxShadow: scrolled ? "0 2px 24px rgba(30,46,4,0.18)" : "none",
+          transition: prefersReducedMotion ? "none" : "height 300ms ease, background 300ms ease, box-shadow 300ms ease",
         }}>
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-[60px] flex items-center justify-between gap-8">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex items-center justify-between gap-8 h-full">
 
           {/* Brand */}
-          <a href="/" className="text-[15px] font-bold tracking-tight shrink-0"
-            style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
+          <a href="/" className="font-bold tracking-tight shrink-0"
+            style={{
+              color: "#ffffff",
+              fontFamily: "var(--font-display)",
+              fontSize: scrolled ? "14px" : "16px",
+              transition: prefersReducedMotion ? "none" : "font-size 300ms ease",
+            }}>
             Plan My Canvas
           </a>
 
           {/* Nav links */}
-          <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
+          <nav className="hidden md:flex items-center flex-1 justify-center"
+            style={{
+              gap: scrolled ? "20px" : "32px",
+              transition: prefersReducedMotion ? "none" : "gap 300ms ease",
+            }}>
             {[
               ["Product", "features"],
               ["Pricing", "pricing"],
@@ -432,30 +452,46 @@ export default function Home() {
             ].map(([label, id]) => (
               <button key={label}
                 onClick={() => id && scrollTo(id)}
-                className="text-[13px] transition-colors duration-200 hover:opacity-70"
-                style={{ color: C.ink, fontFamily: "var(--font-dm-sans)" }}>
+                className="hover:opacity-70 font-bold"
+                style={{
+                  color: "rgba(255,255,255,0.92)",
+                  fontFamily: "var(--font-dm-sans)",
+                  fontSize: scrolled ? "15px" : "17px",
+                  transition: prefersReducedMotion ? "none" : "font-size 300ms ease, opacity 200ms ease",
+                }}>
                 {label}
               </button>
             ))}
           </nav>
 
           {/* Right: icons + CTA */}
-          <div className="flex items-center gap-4 shrink-0">
-            <button className="p-2 rounded transition-colors duration-200 hover:opacity-60"
-              style={{ color: C.ink }}>
-              <Bell style={{ width: 16, height: 16 }} />
+          <div className="flex items-center shrink-0"
+            style={{
+              gap: scrolled ? "8px" : "16px",
+              transition: prefersReducedMotion ? "none" : "gap 300ms ease",
+            }}>
+            <button className="rounded hover:opacity-60 transition-opacity duration-200"
+              style={{ color: "rgba(255,255,255,0.8)", padding: scrolled ? "6px" : "8px" }}>
+              <Bell style={{ width: scrolled ? 14 : 16, height: scrolled ? 14 : 16, transition: prefersReducedMotion ? "none" : "all 300ms ease" }} />
             </button>
-            <button className="p-2 rounded transition-colors duration-200 hover:opacity-60"
-              style={{ color: C.ink }}>
-              <Sun style={{ width: 16, height: 16 }} />
+            <button className="rounded hover:opacity-60 transition-opacity duration-200"
+              style={{ color: "rgba(255,255,255,0.8)", padding: scrolled ? "6px" : "8px" }}>
+              <Sun style={{ width: scrolled ? 14 : 16, height: scrolled ? 14 : 16, transition: prefersReducedMotion ? "none" : "all 300ms ease" }} />
             </button>
             <a href="#pricing"
-              className="group inline-flex items-center gap-2 px-5 py-2 text-[13px] font-semibold rounded transition-all duration-200"
-              style={{ background: C.bronze, color: C.ivory, fontFamily: "var(--font-dm-sans)", boxShadow: `0 1px 3px ${C.bronze}40` }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = "#7A8B30"; el.style.boxShadow = `0 4px 12px ${C.bronze}50`; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = C.bronze; el.style.boxShadow = `0 1px 3px ${C.bronze}40`; }}>
+              className="group inline-flex items-center gap-2 font-bold rounded"
+              style={{
+                background: "#ffffff",
+                color: C.bronze,
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: scrolled ? "13px" : "15px",
+                padding: scrolled ? "7px 16px" : "9px 22px",
+                transition: prefersReducedMotion ? "none" : "font-size 300ms ease, padding 300ms ease, opacity 200ms ease",
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}>
               Start Free Trial
-              <ArrowRight style={{ width: 13, height: 13 }} className="transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight style={{ width: 14, height: 14 }} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </a>
           </div>
 
@@ -465,25 +501,19 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           HERO — Dark, cinematic, full-screen
       ════════════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-between overflow-hidden"
-        style={{ background: C.dark }}>
+      <section ref={heroRef} className="relative flex flex-col justify-between overflow-hidden"
+        style={{ background: C.ivory }}>
         {/* Ambient glow */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-[30%] left-[20%] w-[600px] h-[600px] rounded-full"
-            style={{ background: `${C.bronze}10`, filter: "blur(120px)" }} />
-          <div className="absolute top-[50%] right-[10%] w-[400px] h-[400px] rounded-full"
-            style={{ background: `${C.ivory}05`, filter: "blur(100px)" }} />
+          <div className="absolute top-[20%] left-[10%] w-[600px] h-[600px] rounded-full"
+            style={{ background: `${C.bronze}0C`, filter: "blur(120px)" }} />
+          <div className="absolute bottom-[10%] right-[5%] w-[400px] h-[400px] rounded-full"
+            style={{ background: `${C.bronze}08`, filter: "blur(100px)" }} />
         </div>
 
         {/* Headline area */}
-        <motion.div className="flex-1 max-w-[1440px] mx-auto w-full px-6 md:px-12 pt-40 md:pt-48 pb-12"
+        <motion.div className="flex-1 max-w-[1440px] mx-auto w-full px-6 md:px-12 pt-[100px] md:pt-[116px] pb-4"
           style={{ opacity: heroOpacity, y: heroY }}>
-          {/* Eyebrow */}
-          <motion.p className="text-[10px] tracking-[0.32em] uppercase mb-16"
-            style={{ color: `${C.ivory}40`, fontFamily: "var(--font-dm-sans)" }}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.2 }}>
-            Unified Social Management Platform
-          </motion.p>
 
           {/* Main headline */}
           <div className="max-w-[1100px]">
@@ -497,8 +527,8 @@ export default function Home() {
                 <motion.span className="block font-black leading-[0.88] tracking-tight"
                   style={{
                     fontFamily: "var(--font-display)",
-                    color: accent ? C.bronze : C.ivory,
-                    fontSize: "clamp(56px, 8.5vw, 124px)",
+                    color: accent ? C.bronze : C.ink,
+                    fontSize: "clamp(48px, 7.5vw, 108px)",
                   }}
                   initial={{ y: "110%", opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -511,32 +541,32 @@ export default function Home() {
 
         </motion.div>
 
-        {/* Bottom bar with stats + CTAs */}
+        {/* Bottom bar with CTAs */}
         <motion.div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 pb-14"
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.3, ease: EASE }}>
-          <div className="h-px w-full" style={{ background: C.darkBdr }} />
-          <div className="mt-8 flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="h-px w-full" style={{ background: "#000000" }} />
+          <div className="mt-6 pb-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             {/* Left: subtitle */}
-            <p className="text-[15px] leading-relaxed max-w-md"
-              style={{ color: `${C.ivory}55`, fontFamily: "var(--font-dm-sans)" }}>
+            <p className="text-[17px] leading-relaxed max-w-md"
+              style={{ color: C.muted, fontFamily: "var(--font-dm-sans)" }}>
               The AI-powered social media platform that helps you create, schedule, and analyze content across all platforms in one place.
             </p>
             {/* Right: CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 shrink-0">
               <a href="#pricing"
-                className="group inline-flex items-center gap-3 px-7 py-4 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
-                style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.cream; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; }}>
-                Begin Free Trial
+                className="group inline-flex items-center gap-3 px-7 py-4 rounded text-[12px] font-bold tracking-[0.18em] uppercase transition-colors duration-200"
+                style={{ background: C.bronze, color: C.ivory, fontFamily: "var(--font-dm-sans)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#7A8B30"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.bronze; }}>
+                Start Free Trial
                 <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
               </a>
               <button onClick={() => scrollTo("platform")}
-                className="px-7 py-4 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
-                style={{ color: `${C.ivory}50`, border: `1px solid ${C.ivory}20`, fontFamily: "var(--font-dm-sans)" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}90`; (e.currentTarget as HTMLElement).style.borderColor = `${C.ivory}40`; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}50`; (e.currentTarget as HTMLElement).style.borderColor = `${C.ivory}20`; }}>
+                className="px-7 py-4 rounded text-[12px] font-bold tracking-[0.18em] uppercase transition-colors duration-200"
+                style={{ color: C.muted, border: `1px solid ${C.border}`, fontFamily: "var(--font-dm-sans)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.ink; (e.currentTarget as HTMLElement).style.borderColor = C.ink; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = C.muted; (e.currentTarget as HTMLElement).style.borderColor = C.border; }}>
                 Explore Platform
               </button>
             </div>
@@ -546,7 +576,7 @@ export default function Home() {
         {/* Scroll indicator */}
         <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2, duration: 1 }}>
-          <div className="w-px h-10 overflow-hidden" style={{ background: `${C.ivory}15` }}>
+          <div className="w-px h-10 overflow-hidden" style={{ background: C.border }}>
             <motion.div className="w-full" style={{ background: C.bronze, height: "40px" }}
               animate={{ y: ["-100%", "200%"] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "linear", repeatDelay: 0.3 }} />
@@ -557,15 +587,15 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           TICKER
       ════════════════════════════════════════════════════════════════════ */}
-      <div className="h-12 flex items-center overflow-hidden border-y" style={{ background: C.darkMid, borderColor: C.darkBdr }}>
+      <div className="h-14 flex items-center overflow-hidden border-y" style={{ background: C.darkMid, borderColor: C.darkBdr }}>
         <div className="flex animate-marquee whitespace-nowrap">
           {[...Array(3)].map((_, si) => (
             <span key={si} className="flex items-center">
               {["X (TWITTER)", "LINKEDIN", "INSTAGRAM", "FACEBOOK", "TIKTOK", "PINTEREST", "YOUTUBE"].map((p, i) => (
                 <React.Fragment key={i}>
-                  <span className="text-[10px] tracking-[0.28em] uppercase mx-8"
-                    style={{ color: `${C.ivory}35`, fontFamily: "var(--font-dm-sans)" }}>{p}</span>
-                  <span style={{ color: `${C.ivory}15` }}>·</span>
+                  <span className="text-[13px] font-semibold tracking-[0.2em] uppercase mx-10"
+                    style={{ color: `${C.ivory}70`, fontFamily: "var(--font-dm-sans)" }}>{p}</span>
+                  <span className="text-[16px]" style={{ color: `${C.ivory}30` }}>·</span>
                 </React.Fragment>
               ))}
             </span>
@@ -576,7 +606,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           ABOUT
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-32 md:py-48" style={{ background: C.ivory }}>
+      <section className="py-24 md:py-32" style={{ background: C.ivory }}>
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-start">
             {/* Left column */}
@@ -781,7 +811,7 @@ export default function Home() {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0.15}
             className="mb-10">
             <a href="#pricing"
-              className="group inline-flex items-center gap-4 px-10 py-5 rounded text-[11px] tracking-[0.22em] uppercase transition-colors duration-200"
+              className="group inline-flex items-center gap-4 px-10 py-5 rounded text-[12px] font-bold tracking-[0.18em] uppercase transition-colors duration-200"
               style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.bronze; (e.currentTarget as HTMLElement).style.color = C.ivory; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; (e.currentTarget as HTMLElement).style.color = C.dark; }}>
@@ -827,7 +857,7 @@ export default function Home() {
               <div className="inline-flex rounded overflow-hidden border" style={{ borderColor: C.border }}>
                 {([["mo", "Monthly"], ["yr", "Annual — Save 20%"]] as const).map(([key, lbl]) => (
                   <button key={key} onClick={() => setBilling(key)}
-                    className="px-5 py-2.5 text-[10px] tracking-[0.18em] uppercase transition-all duration-200"
+                    className="px-5 py-2.5 text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-200"
                     style={{ fontFamily: "var(--font-dm-sans)", background: billing === key ? C.ink : "transparent", color: billing === key ? C.ivory : C.muted }}>
                     {lbl}
                   </button>
@@ -838,10 +868,12 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
             {PRICING.map((p, i) => (
-              <motion.div key={i} className="p-8 md:p-10 flex flex-col"
+              <motion.div key={i} className="flex flex-col overflow-hidden"
                 style={{ background: p.featured ? C.ink : "transparent", border: `1px solid ${p.featured ? C.ink : C.border}`, marginLeft: i > 0 ? "-1px" : 0 }}
                 initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
                 custom={i * 0.1} variants={vFadeUp}>
+                {p.featured && <div className="h-1 w-full shrink-0" style={{ background: C.bronze }} />}
+                <div className="p-8 md:p-10 flex flex-col flex-1">
                 <div className="mb-8">
                   <p className="text-[10px] tracking-[0.25em] uppercase mb-3"
                     style={{ color: p.featured ? `${C.ivory}50` : C.subtle, fontFamily: "var(--font-dm-sans)" }}>{p.tagline}</p>
@@ -851,9 +883,11 @@ export default function Home() {
                   <div className="flex items-baseline gap-1">
                     <span className="text-[52px] font-black leading-none"
                       style={{ color: p.featured ? C.ivory : C.ink, fontFamily: "var(--font-display)" }}>
-                      ${p[billing]}
+                      {p[billing] === "Free" ? "Free" : `$${p[billing]}`}
                     </span>
-                    <span className="text-[12px]" style={{ color: p.featured ? `${C.ivory}45` : C.subtle, fontFamily: "var(--font-dm-sans)" }}>/mo</span>
+                    {p[billing] !== "Free" && (
+                      <span className="text-[12px]" style={{ color: p.featured ? `${C.ivory}45` : C.subtle, fontFamily: "var(--font-dm-sans)" }}>/mo</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex-1 border-t pt-8 mb-8" style={{ borderColor: p.featured ? `${C.ivory}15` : C.border }}>
@@ -868,13 +902,14 @@ export default function Home() {
                   </ul>
                 </div>
                 <a href="#"
-                  className="group flex items-center justify-between px-5 py-4 rounded text-[10px] tracking-[0.18em] uppercase transition-all duration-200"
+                  className="group flex items-center justify-between px-5 py-4 rounded text-[12px] font-bold tracking-[0.15em] uppercase transition-all duration-200"
                   style={{ background: p.featured ? C.ivory : "transparent", color: p.featured ? C.ink : C.muted, border: p.featured ? "none" : `1px solid ${C.border}`, fontFamily: "var(--font-dm-sans)" }}
                   onMouseEnter={e => { if (!p.featured) { (e.currentTarget as HTMLElement).style.background = C.cream; (e.currentTarget as HTMLElement).style.color = C.ink; } else { (e.currentTarget as HTMLElement).style.background = C.cream; } }}
                   onMouseLeave={e => { if (!p.featured) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = C.muted; } else { (e.currentTarget as HTMLElement).style.background = C.ivory; } }}>
                   {p.cta}
                   <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 13, height: 13 }} />
                 </a>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -981,10 +1016,10 @@ export default function Home() {
                   ))}
                   <div className="pt-8">
                     <button type="submit"
-                      className="group inline-flex items-center gap-4 px-8 py-5 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
-                      style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.cream; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; }}>
+                      className="group inline-flex items-center gap-4 px-8 py-5 rounded text-[12px] font-bold tracking-[0.18em] uppercase transition-colors duration-200"
+                      style={{ background: C.bronze, color: C.ivory, fontFamily: "var(--font-dm-sans)" }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#7A8B30"; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.bronze; }}>
                       Send Message
                       <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
                     </button>
@@ -1010,15 +1045,15 @@ export default function Home() {
             </Heading>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <a href="#pricing"
-                className="group inline-flex items-center gap-3 px-9 py-5 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
-                style={{ background: C.ink, color: C.ivory, fontFamily: "var(--font-dm-sans)" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.darkMid; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ink; }}>
+                className="group inline-flex items-center gap-3 px-9 py-5 rounded text-[12px] font-bold tracking-[0.18em] uppercase transition-colors duration-200"
+                style={{ background: C.bronze, color: C.ivory, fontFamily: "var(--font-dm-sans)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#7A8B30"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.bronze; }}>
                 Start 14-Day Free Trial
                 <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
               </a>
               <a href="mailto:support@planmycanvas.io"
-                className="group inline-flex items-center gap-3 px-9 py-5 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                className="group inline-flex items-center gap-3 px-9 py-5 rounded text-[12px] font-bold tracking-[0.18em] uppercase transition-colors duration-200"
                 style={{ color: C.muted, border: `1px solid ${C.border}`, fontFamily: "var(--font-dm-sans)" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.ink; (e.currentTarget as HTMLElement).style.borderColor = C.ink; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = C.muted; (e.currentTarget as HTMLElement).style.borderColor = C.border; }}>
