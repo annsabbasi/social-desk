@@ -15,9 +15,9 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SocialDesk — The Unified Workspace for Social Media Teams",
+  title: "Plan My Canvas — All accounts. One Canvas.",
   description:
-    "Command every channel. A unified workspace for scheduling, engagement, and analytics across all social platforms. Built for teams who move at the speed of digital culture.",
+    "All accounts. One Canvas. Command every channel. A unified workspace for scheduling, engagement, and analytics across all social platforms. Built for teams who move at the speed of digital culture.",
 };
 
 export default function RootLayout({

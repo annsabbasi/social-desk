@@ -1,27 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  MessageSquare, 
-  Calendar, 
-  BarChart3, 
-  Settings, 
-  Plus, 
-  Send, 
-  CheckCircle2, 
-  ChevronRight, 
-  Inbox, 
-  Sparkles, 
-  TrendingUp, 
-  ArrowUpRight, 
-  Zap,
-  Users,
-  Search,
-  MessageCircle,
-  ThumbsUp,
-  Share2,
-  Clock,
-  ExternalLink
+import {
+  MessageSquare,
+  Calendar,
+  BarChart3,
+  Settings,
+  Plus,
+  Send,
+  CheckCircle2,
+  Inbox,
+  Sparkles,
+  Users
 } from "lucide-react";
 
 type ActiveTab = "inbox" | "publisher" | "analytics";
@@ -46,7 +36,7 @@ export function DashboardMockup() {
       sender: "Sarah Jenkins",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80",
       platform: "linkedin" as const,
-      preview: "Hi! I saw your recent post about the SocialDesk API. Is there a developer trial available?",
+      preview: "Hi! I saw your recent post about the Plan My Canvas API. Is there a developer trial available?",
       time: "5m ago",
       unread: true,
       category: "Question"
@@ -76,7 +66,7 @@ export function DashboardMockup() {
   const [selectedMessageId, setSelectedMessageId] = useState(1);
   const selectedMessage = messages.find(m => m.id === selectedMessageId) || messages[0];
 
-  const handleSendReply = (e: React.FormEvent) => {
+  const handleSendReply = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!replyText.trim()) return;
     setReplied(true);
@@ -92,7 +82,7 @@ export function DashboardMockup() {
     setIsGeneratingAI(true);
     setTimeout(() => {
       if (selectedMessage.id === 1) {
-        setReplyText("Hi Sarah! Yes, we have a fully-featured developer sandbox with up to 10,000 free operations/month. You can sign up at developer.socialdesk.io. Let me know if you need assistance!");
+        setReplyText("Hi Sarah! Yes, we have a fully-featured developer sandbox with up to 10,000 free operations/month. You can sign up at developer.planmycanvas.io. Let me know if you need assistance!");
       } else if (selectedMessage.id === 2) {
         setReplyText("Thank you so much Alex! We appreciate the shoutout. Keep crushing your social media goals!");
       } else {
@@ -122,7 +112,7 @@ export function DashboardMockup() {
           <div className="w-3 h-3 rounded-full bg-rose-500/80"></div>
           <div className="w-3 h-3 rounded-full bg-amber-500/80"></div>
           <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-          <span className="text-xs text-neutral-500 ml-4 font-mono select-none">SocialDesk App — WorkSpace v1.2</span>
+          <span className="text-xs text-neutral-500 ml-4 font-mono select-none">Plan My Canvas App — WorkSpace v1.2</span>
         </div>
         
         {/* Navigation Tabs inside the Mockup */}

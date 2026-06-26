@@ -2,22 +2,23 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Check, Plus } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Plus, Bell, Sun } from "lucide-react";
 import { DashboardMockup } from "@/components/dashboard-mockup";
 import { SocialComposerSandbox } from "@/components/social-composer-sandbox";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
-  ivory:    "#F7F4EF",
-  cream:    "#F0EBE3",
-  border:   "#E0D8CE",
-  ink:      "#1A1714",
-  muted:    "#6B6560",
-  subtle:   "#9E9892",
-  dark:     "#0D0B09",
-  darkMid:  "#1A1714",
-  darkBdr:  "rgba(247,244,239,0.1)",
-  bronze:   "#B5935A",
+  ivory: "#F7F4EF",
+  cream: "#F0EBE3",
+  border: "#E0D8CE",
+  ink: "#1A1714",
+  muted: "#4F4A45",
+  subtle: "#75706A",
+  dark: "#0D0B09",
+  darkMid: "#1A1714",
+  darkBdr: "rgba(247,244,239,0.1)",
+  bronze: "#8A9B38",
+  oliveLight: "#F2F5E8",
 } as const;
 
 // ─── Easing & Transitions ─────────────────────────────────────────────────────
@@ -26,19 +27,19 @@ const EASE_SOFT = [0.25, 0.46, 0.45, 0.94] as const;
 
 // ─── Variants ─────────────────────────────────────────────────────────────────
 const vFadeUp = {
-  hidden:  { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 32 },
   visible: (d = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.95, ease: EASE, delay: d } }),
 };
 const vFadeIn = {
-  hidden:  { opacity: 0 },
+  hidden: { opacity: 0 },
   visible: (d = 0) => ({ opacity: 1, transition: { duration: 0.7, ease: EASE_SOFT, delay: d } }),
 };
 const vSlideLeft = {
-  hidden:  { opacity: 0, x: -40 },
+  hidden: { opacity: 0, x: -40 },
   visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 1.0, ease: EASE, delay: d } }),
 };
 const vSlideRight = {
-  hidden:  { opacity: 0, x: 40 },
+  hidden: { opacity: 0, x: 40 },
   visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 1.0, ease: EASE, delay: d } }),
 };
 
@@ -76,7 +77,7 @@ const CASE_STUDIES = [
     type: "Creative Agency · 5 Seats",
     capability: "Universal Inbox",
     metric: "15 hrs/wk saved",
-    quote: "Before SocialDesk, we were constantly logging in and out of client accounts. Now our entire support team works from one unified inbox and never misses a message.",
+    quote: "Before Plan My Canvas, we were constantly logging in and out of client accounts. Now our entire support team works from one unified inbox and never misses a message.",
     author: "Clara Reynolds",
     role: "Founder, BrandStudio",
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=80&h=80&q=80",
@@ -96,7 +97,7 @@ const CASE_STUDIES = [
     type: "Enterprise · 45 Seats",
     capability: "Analytics Suite",
     metric: "50% lower tool cost",
-    quote: "We consolidated our entire social media toolset into SocialDesk. Cut tool spend in half and our team alignment has never been stronger — one platform, one source of truth.",
+    quote: "We consolidated our entire social media toolset into Plan My Canvas. Cut tool spend in half and our team alignment has never been stronger — one platform, one source of truth.",
     author: "Tariq Mahmood",
     role: "Head of Social, DevPulse",
     avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=80&h=80&q=80",
@@ -107,7 +108,7 @@ const TIMELINE = [
   {
     year: "2022",
     headline: "Founded",
-    body: "Three former social media managers, exhausted from juggling seven apps, built the tool they always needed. SocialDesk was born from frustration and a belief that better was possible.",
+    body: "Three former social media managers, exhausted from juggling seven apps, built the tool they always needed. Plan My Canvas was born from frustration and a belief that better was possible.",
   },
   {
     year: "2023",
@@ -122,14 +123,14 @@ const TIMELINE = [
   {
     year: "2025",
     headline: "Enterprise Tier",
-    body: "12,000+ teams. Seven platforms. White-label reporting and enterprise approvals. SocialDesk became the command center for major agencies and Fortune 500 social teams worldwide.",
+    body: "12,000+ teams. Seven platforms. White-label reporting and enterprise approvals. Plan My Canvas became the command center for major agencies and Fortune 500 social teams worldwide.",
   },
 ];
 
 const FAQS = [
   {
-    q: "Which social platforms does SocialDesk support?",
-    a: "SocialDesk integrates fully with X (Twitter), LinkedIn Pages & Profiles, Instagram Business, Facebook Pages, YouTube Channels, TikTok, and Pinterest. New channels are added regularly based on API availability.",
+    q: "Which social platforms does Plan My Canvas support?",
+    a: "Plan My Canvas integrates fully with X (Twitter), LinkedIn Pages & Profiles, Instagram Business, Facebook Pages, YouTube Channels, TikTok, and Pinterest. New channels are added regularly based on API availability.",
   },
   {
     q: "How does the AI Co-pilot enhance posts?",
@@ -153,7 +154,7 @@ const PRICING = [
   {
     name: "Starter",
     tagline: "For creators and freelancers",
-    mo: 19, yr: 15,
+    mo: 199, yr: "Free",
     items: ["Up to 3 social profiles", "1 user seat", "100 scheduled posts/mo", "Basic analytics", "Standard support"],
     cta: "Begin with Starter",
     featured: false,
@@ -276,11 +277,11 @@ function CaseStudyRow({ cs, idx }: { cs: typeof CASE_STUDIES[0]; idx: number }) 
         {/* Visual side */}
         <motion.div className={`${isEven ? "order-2" : "order-2 lg:order-1"} relative`}
           variants={isEven ? vSlideRight : vSlideLeft} custom={0.1}>
-          <div className="relative overflow-hidden rounded-2xl"
+          <div className="relative overflow-hidden rounded"
             style={{ border: `1px solid ${C.border}`, boxShadow: "0 24px 60px rgba(26,23,20,0.1)" }}>
             <div className="absolute top-0 left-0 right-0 h-1"
               style={{ background: C.bronze }} />
-            <div className="p-8" style={{ background: C.cream }}>
+            <div className="p-8" style={{ background: C.oliveLight }}>
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-[18px] font-bold" style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
@@ -400,11 +401,6 @@ export default function Home() {
     setFormSent(true);
   };
 
-  // ─── Shared nav link style ───────────────────────────────────────────────
-  const navLinkStyle = (isScrolled: boolean) => ({
-    color: isScrolled ? C.muted : `${C.ivory}65`,
-    fontFamily: "var(--font-dm-sans)",
-  });
 
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: C.ivory }}>
@@ -412,35 +408,57 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           NAVIGATION
       ════════════════════════════════════════════════════════════════════ */}
-      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          background: scrolled ? `${C.ivory}f0` : "transparent",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: scrolled ? `1px solid ${C.border}` : "1px solid transparent",
+          background: C.ivory,
+          borderBottom: `1px solid ${C.border}`,
         }}>
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-[56px] flex items-center justify-between">
-          <a href="/" className="text-[13px] font-medium tracking-[0.18em] uppercase transition-colors duration-300"
-            style={{ color: scrolled ? C.ink : C.ivory, fontFamily: "var(--font-dm-sans)" }}>
-            SocialDesk
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-[60px] flex items-center justify-between gap-8">
+
+          {/* Brand */}
+          <a href="/" className="text-[15px] font-bold tracking-tight shrink-0"
+            style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
+            Plan My Canvas
           </a>
-          <nav className="hidden md:flex items-center gap-10">
-            {[["Features", "features"], ["Platform", "platform"], ["Stories", "stories"], ["Pricing", "pricing"]].map(([l, id]) => (
-              <button key={id} onClick={() => scrollTo(id)}
-                className="text-[10px] tracking-[0.18em] uppercase transition-colors duration-300 hover:opacity-100"
-                style={navLinkStyle(scrolled)}>{l}</button>
+
+          {/* Nav links */}
+          <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
+            {[
+              ["Product", "features"],
+              ["Pricing", "pricing"],
+              ["Integration", "platform"],
+              ["Blog", ""],
+              ["Help", ""],
+            ].map(([label, id]) => (
+              <button key={label}
+                onClick={() => id && scrollTo(id)}
+                className="text-[13px] transition-colors duration-200 hover:opacity-70"
+                style={{ color: C.ink, fontFamily: "var(--font-dm-sans)" }}>
+                {label}
+              </button>
             ))}
           </nav>
-          <div className="flex items-center gap-6">
-            <button className="text-[10px] tracking-[0.18em] uppercase transition-colors duration-300"
-              style={navLinkStyle(scrolled)}>Sign In</button>
+
+          {/* Right: icons + CTA */}
+          <div className="flex items-center gap-4 shrink-0">
+            <button className="p-2 rounded transition-colors duration-200 hover:opacity-60"
+              style={{ color: C.ink }}>
+              <Bell style={{ width: 16, height: 16 }} />
+            </button>
+            <button className="p-2 rounded transition-colors duration-200 hover:opacity-60"
+              style={{ color: C.ink }}>
+              <Sun style={{ width: 16, height: 16 }} />
+            </button>
             <a href="#pricing"
-              className="text-[10px] tracking-[0.18em] uppercase px-5 py-2.5 transition-colors duration-200"
-              style={{ background: scrolled ? C.ink : C.ivory, color: scrolled ? C.ivory : C.dark, fontFamily: "var(--font-dm-sans)" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}>
-              Start Free
+              className="group inline-flex items-center gap-2 px-5 py-2 text-[13px] font-semibold rounded transition-all duration-200"
+              style={{ background: C.bronze, color: C.ivory, fontFamily: "var(--font-dm-sans)", boxShadow: `0 1px 3px ${C.bronze}40` }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = "#7A8B30"; el.style.boxShadow = `0 4px 12px ${C.bronze}50`; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = C.bronze; el.style.boxShadow = `0 1px 3px ${C.bronze}40`; }}>
+              Start Free Trial
+              <ArrowRight style={{ width: 13, height: 13 }} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </a>
           </div>
+
         </div>
       </header>
 
@@ -470,11 +488,10 @@ export default function Home() {
           {/* Main headline */}
           <div className="max-w-[1100px]">
             {[
-              { text: "Command",     accent: false },
-              { text: "Every",       accent: false },
-              { text: "Voice.",      accent: true  },
-              { text: "Own Every",   accent: false },
-              { text: "Channel.",    accent: true  },
+              { text: "All", accent: false },
+              { text: "Accounts,", accent: false },
+              { text: "One", accent: true },
+              { text: "Canvas.", accent: true },
             ].map(({ text, accent }, i) => (
               <div key={i} className="overflow-hidden">
                 <motion.span className="block font-black leading-[0.88] tracking-tight"
@@ -491,29 +508,24 @@ export default function Home() {
               </div>
             ))}
           </div>
+
         </motion.div>
 
         {/* Bottom bar with stats + CTAs */}
         <motion.div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 pb-14"
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.3, ease: EASE }}>
-          <div className="h-px mb-10 w-full" style={{ background: C.darkBdr }} />
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-10">
-              {[["12,000+", "Social Teams"], ["7", "Platforms"], ["99.9%", "Uptime SLA"]].map(([v, l]) => (
-                <div key={l}>
-                  <p className="text-[36px] md:text-[44px] font-black leading-none"
-                    style={{ color: C.ivory, fontFamily: "var(--font-display)" }}>{v}</p>
-                  <p className="text-[10px] tracking-[0.2em] uppercase mt-2"
-                    style={{ color: `${C.ivory}40`, fontFamily: "var(--font-dm-sans)" }}>{l}</p>
-                </div>
-              ))}
-            </div>
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4">
+          <div className="h-px w-full" style={{ background: C.darkBdr }} />
+          <div className="mt-8 flex flex-col md:flex-row md:items-center justify-between gap-8">
+            {/* Left: subtitle */}
+            <p className="text-[15px] leading-relaxed max-w-md"
+              style={{ color: `${C.ivory}55`, fontFamily: "var(--font-dm-sans)" }}>
+              The AI-powered social media platform that helps you create, schedule, and analyze content across all platforms in one place.
+            </p>
+            {/* Right: CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 shrink-0">
               <a href="#pricing"
-                className="group inline-flex items-center gap-3 px-7 py-4 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                className="group inline-flex items-center gap-3 px-7 py-4 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
                 style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.cream; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; }}>
@@ -521,7 +533,7 @@ export default function Home() {
                 <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
               </a>
               <button onClick={() => scrollTo("platform")}
-                className="px-7 py-4 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                className="px-7 py-4 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
                 style={{ color: `${C.ivory}50`, border: `1px solid ${C.ivory}20`, fontFamily: "var(--font-dm-sans)" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}90`; (e.currentTarget as HTMLElement).style.borderColor = `${C.ivory}40`; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}50`; (e.currentTarget as HTMLElement).style.borderColor = `${C.ivory}20`; }}>
@@ -577,10 +589,10 @@ export default function Home() {
                 <span style={{ color: C.bronze }}>We built a command centre.</span>
               </Heading>
               <p className="text-[15px] leading-[1.85] mb-8" style={{ color: C.muted }}>
-                Social media management has always meant switching between apps, missing messages, and losing hours to admin. SocialDesk changes that — one unified workspace for every platform, every conversation, every metric.
+                Social media management has always meant switching between apps, missing messages, and losing hours to admin. Plan My Canvas changes that — one unified workspace for every platform, every conversation, every metric.
               </p>
               <p className="text-[15px] leading-[1.85]" style={{ color: C.muted }}>
-                Built by three former social media managers who were exhausted by the chaos, SocialDesk brings precision and clarity to the world&apos;s most dynamic communications medium.
+                Built by three former social media managers who were exhausted by the chaos, Plan My Canvas brings precision and clarity to the world&apos;s most dynamic communications medium.
               </p>
             </motion.div>
 
@@ -588,10 +600,10 @@ export default function Home() {
             <motion.div className="lg:col-span-7 lg:pl-8"
               initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
               variants={vSlideRight} custom={0.15}>
-              <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+              <div className="rounded overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
                 {/* Top: accent bar */}
                 <div className="h-1 w-full" style={{ background: C.bronze }} />
-                <div className="p-10 md:p-14" style={{ background: C.cream }}>
+                <div className="p-10 md:p-14" style={{ background: C.oliveLight }}>
                   <div className="grid grid-cols-2 gap-10 mb-14">
                     {[
                       ["2022", "Year Founded"],
@@ -669,7 +681,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           CASE STUDIES
       ════════════════════════════════════════════════════════════════════ */}
-      <section id="stories" className="py-32 md:py-40 scroll-mt-14" style={{ background: C.cream }}>
+      <section id="stories" className="py-32 md:py-40 scroll-mt-14" style={{ background: C.oliveLight }}>
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between border-b pb-10"
             style={{ borderColor: C.border }}>
@@ -680,7 +692,7 @@ export default function Home() {
             <motion.p className="hidden md:block text-[14px] leading-[1.8] max-w-xs text-right"
               style={{ color: C.muted }}
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeIn} custom={0.2}>
-              Real teams, real results. See how SocialDesk transforms daily workflow.
+              Real teams, real results. See how Plan My Canvas transforms daily workflow.
             </motion.p>
           </div>
           {CASE_STUDIES.map((cs, i) => <CaseStudyRow key={i} cs={cs} idx={i} />)}
@@ -717,7 +729,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           TIMELINE / EXPERIENCE
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-32 md:py-40" style={{ background: C.cream }}>
+      <section className="py-32 md:py-40" style={{ background: C.oliveLight }}>
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between border-b pb-10 mb-2"
             style={{ borderColor: C.border }}>
@@ -727,6 +739,75 @@ export default function Home() {
             </motion.div>
           </div>
           {TIMELINE.map((t, i) => <TimelineItem key={i} {...t} idx={i} />)}
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          URGENCY CTA BREAK
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="relative py-32 md:py-44 overflow-hidden" style={{ background: C.dark }}>
+        {/* Ambient glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full"
+            style={{ background: `${C.bronze}08`, filter: "blur(120px)" }} />
+        </div>
+
+        <div className="relative max-w-[1440px] mx-auto px-6 md:px-12 text-center">
+          {/* Headline */}
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={vFadeUp} custom={0}>
+            <p className="text-[10px] tracking-[0.32em] uppercase mb-8"
+              style={{ color: `${C.ivory}30`, fontFamily: "var(--font-dm-sans)" }}>
+              No Risk · Full Access · Instant Setup
+            </p>
+            <h2 className="font-black leading-[0.88] tracking-tight mb-8"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(52px, 8vw, 112px)",
+                color: C.ivory,
+              }}>
+              Your Brand{" "}
+              <span style={{ color: C.bronze }}>Won&apos;t Wait.</span>
+            </h2>
+            <p className="text-[16px] md:text-[18px] leading-[1.7] max-w-xl mx-auto mb-12"
+              style={{ color: `${C.ivory}50`, fontFamily: "var(--font-dm-sans)" }}>
+              Get your first workspace live in under 5 minutes.
+              <br />Free for 14 days — no credit card required.
+            </p>
+          </motion.div>
+
+          {/* CTA Button */}
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0.15}
+            className="mb-10">
+            <a href="#pricing"
+              className="group inline-flex items-center gap-4 px-10 py-5 rounded text-[11px] tracking-[0.22em] uppercase transition-colors duration-200"
+              style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.bronze; (e.currentTarget as HTMLElement).style.color = C.ivory; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; (e.currentTarget as HTMLElement).style.color = C.dark; }}>
+              Start Free Today
+              <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
+            </a>
+          </motion.div>
+
+          {/* Trust badges */}
+          <motion.div
+            className="flex flex-wrap justify-center gap-3"
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeIn} custom={0.3}>
+            {[
+              "No credit card",
+              "Cancel anytime",
+              "Setup in 5 minutes",
+              "All platforms included",
+            ].map((badge) => (
+              <div key={badge}
+                className="flex items-center gap-2 px-4 py-2.5 text-[11px] tracking-[0.1em] uppercase"
+                style={{ border: `1px solid ${C.ivory}15`, color: `${C.ivory}50`, fontFamily: "var(--font-dm-sans)" }}>
+                <Check style={{ width: 11, height: 11, color: C.bronze, flexShrink: 0 }} />
+                {badge}
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -743,7 +824,7 @@ export default function Home() {
             </motion.div>
             <motion.div className="mt-8 md:mt-0"
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeIn} custom={0.2}>
-              <div className="inline-flex border" style={{ borderColor: C.border }}>
+              <div className="inline-flex rounded overflow-hidden border" style={{ borderColor: C.border }}>
                 {([["mo", "Monthly"], ["yr", "Annual — Save 20%"]] as const).map(([key, lbl]) => (
                   <button key={key} onClick={() => setBilling(key)}
                     className="px-5 py-2.5 text-[10px] tracking-[0.18em] uppercase transition-all duration-200"
@@ -787,7 +868,7 @@ export default function Home() {
                   </ul>
                 </div>
                 <a href="#"
-                  className="group flex items-center justify-between px-5 py-4 text-[10px] tracking-[0.18em] uppercase transition-all duration-200"
+                  className="group flex items-center justify-between px-5 py-4 rounded text-[10px] tracking-[0.18em] uppercase transition-all duration-200"
                   style={{ background: p.featured ? C.ivory : "transparent", color: p.featured ? C.ink : C.muted, border: p.featured ? "none" : `1px solid ${C.border}`, fontFamily: "var(--font-dm-sans)" }}
                   onMouseEnter={e => { if (!p.featured) { (e.currentTarget as HTMLElement).style.background = C.cream; (e.currentTarget as HTMLElement).style.color = C.ink; } else { (e.currentTarget as HTMLElement).style.background = C.cream; } }}
                   onMouseLeave={e => { if (!p.featured) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = C.muted; } else { (e.currentTarget as HTMLElement).style.background = C.ivory; } }}>
@@ -807,7 +888,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════════════════════════════
           FAQ
       ════════════════════════════════════════════════════════════════════ */}
-      <section className="py-32 md:py-40" style={{ background: C.cream }}>
+      <section className="py-32 md:py-40" style={{ background: C.oliveLight }}>
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             <motion.div className="lg:col-span-4"
@@ -816,8 +897,8 @@ export default function Home() {
               <Heading size="lg" className="mb-6">Common Queries</Heading>
               <p className="text-[14px] leading-[1.85]" style={{ color: C.muted }}>
                 Can&apos;t find what you need? Reach us at{" "}
-                <a href="mailto:support@socialdesk.io" style={{ color: C.ink, textDecoration: "underline" }}>
-                  support@socialdesk.io
+                <a href="mailto:support@planmycanvas.io" style={{ color: C.ink, textDecoration: "underline" }}>
+                  support@planmycanvas.io
                 </a>
               </p>
             </motion.div>
@@ -847,7 +928,7 @@ export default function Home() {
                 Tell us about your team and we&apos;ll get you set up in minutes. No credit card, no commitment — just a better way to work.
               </p>
               <div className="space-y-6">
-                {[["Email", "support@socialdesk.io"], ["Response", "Within 2 hours"], ["Trial", "14 days free"]].map(([k, v]) => (
+                {[["Email", "support@planmycanvas.io"], ["Response", "Within 2 hours"], ["Trial", "14 days free"]].map(([k, v]) => (
                   <div key={k} className="flex items-center gap-4">
                     <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.bronze }} />
                     <span className="text-[10px] tracking-[0.2em] uppercase mr-2" style={{ color: `${C.ivory}35`, fontFamily: "var(--font-dm-sans)" }}>{k}</span>
@@ -900,7 +981,7 @@ export default function Home() {
                   ))}
                   <div className="pt-8">
                     <button type="submit"
-                      className="group inline-flex items-center gap-4 px-8 py-5 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                      className="group inline-flex items-center gap-4 px-8 py-5 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
                       style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.cream; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; }}>
@@ -929,15 +1010,15 @@ export default function Home() {
             </Heading>
             <div className="flex flex-col sm:flex-row gap-4 items-start">
               <a href="#pricing"
-                className="group inline-flex items-center gap-3 px-9 py-5 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                className="group inline-flex items-center gap-3 px-9 py-5 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
                 style={{ background: C.ink, color: C.ivory, fontFamily: "var(--font-dm-sans)" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.darkMid; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ink; }}>
                 Start 14-Day Free Trial
                 <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
               </a>
-              <a href="mailto:support@socialdesk.io"
-                className="group inline-flex items-center gap-3 px-9 py-5 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+              <a href="mailto:support@planmycanvas.io"
+                className="group inline-flex items-center gap-3 px-9 py-5 rounded text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
                 style={{ color: C.muted, border: `1px solid ${C.border}`, fontFamily: "var(--font-dm-sans)" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.ink; (e.currentTarget as HTMLElement).style.borderColor = C.ink; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = C.muted; (e.currentTarget as HTMLElement).style.borderColor = C.border; }}>
@@ -960,10 +1041,10 @@ export default function Home() {
             {/* Brand */}
             <div className="md:col-span-4">
               <p className="text-[13px] font-medium tracking-[0.15em] uppercase mb-5"
-                style={{ color: C.ivory, fontFamily: "var(--font-dm-sans)" }}>SocialDesk</p>
+                style={{ color: C.ivory, fontFamily: "var(--font-dm-sans)" }}>Plan My Canvas</p>
               <p className="text-[13px] leading-[1.85] max-w-xs mb-8"
                 style={{ color: `${C.ivory}40` }}>
-                The unified social media workspace for teams who demand precision, speed, and clarity.
+                All accounts. One Canvas. The unified social media workspace for teams who demand precision, speed, and clarity.
               </p>
               <div className="flex items-center gap-5">
                 {[
@@ -1026,14 +1107,14 @@ export default function Home() {
                   Thank you for subscribing.
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="flex">
+                <form onSubmit={handleSubscribe} className="flex rounded overflow-hidden" style={{ border: `1px solid ${C.ivory}15` }}>
                   <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
                     placeholder="your@email.com"
                     className="flex-1 px-4 py-3 text-[12px] bg-transparent outline-none placeholder:opacity-20"
-                    style={{ border: `1px solid ${C.ivory}15`, borderRight: "none", color: C.ivory, fontFamily: "var(--font-dm-sans)" }} />
+                    style={{ color: C.ivory, fontFamily: "var(--font-dm-sans)" }} />
                   <button type="submit"
                     className="px-4 py-3 transition-colors duration-200 flex items-center"
-                    style={{ background: `${C.ivory}10`, border: `1px solid ${C.ivory}15`, color: `${C.ivory}50` }}
+                    style={{ background: `${C.ivory}10`, borderLeft: `1px solid ${C.ivory}15`, color: `${C.ivory}50` }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = `${C.ivory}20`; (e.currentTarget as HTMLElement).style.color = C.ivory; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = `${C.ivory}10`; (e.currentTarget as HTMLElement).style.color = `${C.ivory}50`; }}>
                     <ArrowUpRight style={{ width: 14, height: 14 }} />
@@ -1047,7 +1128,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-8 border-t"
             style={{ borderColor: C.darkBdr }}>
             <p className="text-[11px]" style={{ color: `${C.ivory}20`, fontFamily: "var(--font-dm-sans)" }}>
-              © {new Date().getFullYear()} SocialDesk, Inc. All rights reserved.
+              © {new Date().getFullYear()} Plan My Canvas, Inc. All rights reserved.
             </p>
             <div className="flex items-center gap-7">
               {["Security Audited", "System Status: Operational"].map(item => (

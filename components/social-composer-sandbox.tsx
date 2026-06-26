@@ -23,7 +23,7 @@ type Platform = "x" | "linkedin" | "instagram";
 export function SocialComposerSandbox() {
   const [activePlatform, setActivePlatform] = useState<Platform>("x");
   const [postText, setPostText] = useState(
-    "We are thrilled to introduce SocialDesk today—the ultimate command center for modern social media teams. 🚀\n\nOne inbox for comments, one visual calendar, and automated analytics to save your marketing team hours every single day. Let's go!"
+    "We are thrilled to introduce Plan My Canvas today—the ultimate command center for modern social media teams. 🚀\n\nOne inbox for comments, one visual calendar, and automated analytics to save your marketing team hours every single day. Let's go!"
   );
   const [includeImage, setIncludeImage] = useState(true);
   const [imageStyle, setImageStyle] = useState("tech"); // "tech" | "team" | "analytics"
@@ -41,7 +41,7 @@ export function SocialComposerSandbox() {
   const handleAIImproveText = () => {
     // Basic mock text enhancer
     setPostText(
-      "Say goodbye to shifting tabs! ⚡\n\nMeet SocialDesk: the unified command center for social media teams. Connect your profiles, publish visual content, and reply to all comments in one smart inbox.\n\nStart saving 15+ hours weekly with our AI Co-pilot. Try it free 👇"
+      "Say goodbye to shifting tabs! ⚡\n\nMeet Plan My Canvas: the unified command center for social media teams. Connect your profiles, publish visual content, and reply to all comments in one smart inbox.\n\nStart saving 15+ hours weekly with our AI Co-pilot. Try it free 👇"
     );
   };
 
@@ -49,13 +49,13 @@ export function SocialComposerSandbox() {
     <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
       
       {/* LEFT: Composer Controls (5 cols) */}
-      <div className="lg:col-span-5 bg-neutral-900 border border-neutral-800 rounded-2xl p-5 flex flex-col gap-4">
+      <div className="lg:col-span-5 bg-neutral-900 border border-neutral-800 rounded p-5 flex flex-col gap-4">
         <div>
           <h3 className="text-base font-bold text-white flex items-center gap-2">
             Interactive Social Sandbox
           </h3>
           <p className="text-xs text-neutral-400 mt-1">
-            Compose your post and see how SocialDesk renders it across channels instantly.
+            Compose your post and see how Plan My Canvas renders it across channels instantly.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export function SocialComposerSandbox() {
                 <button
                   key={style.id}
                   onClick={() => setImageStyle(style.id)}
-                  className={`text-[10px] font-semibold py-1.5 px-2 rounded-md border text-center transition-all ${
+                  className={`text-[10px] font-semibold py-1.5 px-2 rounded border text-center transition-all ${
                     imageStyle === style.id
                       ? "bg-violet-500/25 border-violet-500 text-white shadow-sm"
                       : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:text-neutral-200"
@@ -142,7 +142,7 @@ export function SocialComposerSandbox() {
               <button
                 key={channel.id}
                 onClick={() => setActivePlatform(channel.id)}
-                className={`py-2 px-1 text-center font-bold text-xs rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`py-2 px-1 text-center font-bold text-xs rounded border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activePlatform === channel.id
                     ? channel.activeClass + " shadow-md scale-[1.02]"
                     : "bg-neutral-950 border-neutral-800 text-neutral-400 hover:text-neutral-200"
@@ -161,18 +161,18 @@ export function SocialComposerSandbox() {
           <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-3 flex items-start gap-2.5">
             <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
             <p className="text-[11px] text-rose-300 leading-relaxed">
-              <strong>X character limit exceeded!</strong> The post length is {getCharCount()} characters. Standard posts will be truncated. Upgrade to SocialDesk premium to schedule threads or auto-split.
+              <strong>X character limit exceeded!</strong> The post length is {getCharCount()} characters. Standard posts will be truncated. Upgrade to Plan My Canvas premium to schedule threads or auto-split.
             </p>
           </div>
         )}
       </div>
 
       {/* RIGHT: Live Feed Render Preview (7 cols) */}
-      <div className="lg:col-span-7 bg-neutral-950 border border-neutral-900 rounded-2xl p-6 flex flex-col items-center justify-center relative overflow-hidden min-h-[360px]">
+      <div className="lg:col-span-7 bg-neutral-950 border border-neutral-900 rounded p-6 flex flex-col items-center justify-center relative overflow-hidden min-h-[360px]">
         {/* Abstract grid backdrop to look like a desktop canvas */}
         <div className="absolute inset-0 bg-[radial-gradient(#1f2937_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
         
-        <div className="w-full max-w-[420px] bg-neutral-900 border border-neutral-800 rounded-2xl shadow-xl overflow-hidden z-10 transition-all duration-300 hover:shadow-2xl">
+        <div className="w-full max-w-[420px] bg-neutral-900 border border-neutral-800 rounded shadow-xl overflow-hidden z-10 transition-all duration-300 hover:shadow-2xl">
           
           {/* Mock post header */}
           <div className="bg-neutral-850 px-4 py-2 border-b border-neutral-800 flex items-center justify-between text-xs text-neutral-400">
@@ -187,15 +187,15 @@ export function SocialComposerSandbox() {
           {activePlatform === "x" && (
             <div className="p-4 bg-black text-white text-left font-sans">
               <div className="flex items-start gap-3">
-                <img 
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" 
-                  alt="SocialDesk" 
+                <img
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80"
+                  alt="Plan My Canvas"
                   className="w-10 h-10 rounded-full object-cover border border-neutral-800"
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-bold text-white hover:underline truncate">SocialDesk</span>
-                    <span className="text-xs text-neutral-500 truncate">@socialdesk_hq</span>
+                    <span className="text-sm font-bold text-white hover:underline truncate">Plan My Canvas</span>
+                    <span className="text-xs text-neutral-500 truncate">@planmycanvas</span>
                     <span className="text-xs text-neutral-500 select-none">·</span>
                     <span className="text-xs text-neutral-500 hover:underline">1m</span>
                   </div>
@@ -216,7 +216,7 @@ export function SocialComposerSandbox() {
 
                   {/* Attached Media */}
                   {includeImage && (
-                    <div className="mt-3 rounded-2xl border border-neutral-800 overflow-hidden bg-neutral-900">
+                    <div className="mt-3 rounded border border-neutral-800 overflow-hidden bg-neutral-900">
                       <img src={mockImages[imageStyle as keyof typeof mockImages]} alt="Post visual" className="w-full max-h-[220px] object-cover" />
                     </div>
                   )}
@@ -267,12 +267,12 @@ export function SocialComposerSandbox() {
                 <div className="flex gap-2">
                   <img 
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" 
-                    alt="SocialDesk" 
+                    alt="Plan My Canvas" 
                     className="w-11 h-11 rounded object-cover border border-neutral-800"
                   />
                   <div>
                     <h4 className="font-bold text-[13px] text-white hover:underline hover:text-blue-400 flex items-center gap-1">
-                      SocialDesk HQ
+                      Plan My Canvas
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500/80"></span>
                       <span className="text-[10px] text-neutral-400 font-normal">1st</span>
                     </h4>
@@ -340,15 +340,15 @@ export function SocialComposerSandbox() {
                 <div className="flex items-center gap-2">
                   <img 
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" 
-                    alt="SocialDesk" 
+                    alt="Plan My Canvas" 
                     className="w-8 h-8 rounded-full object-cover p-[1.5px] bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600"
                   />
                   <div>
                     <h4 className="font-bold text-[12px] hover:underline cursor-pointer flex items-center gap-1">
-                      socialdesk.app
+                      planmycanvas
                       <span className="w-3 h-3 bg-sky-500 rounded-full flex items-center justify-center text-[6px] text-white">✓</span>
                     </h4>
-                    <p className="text-[9px] text-neutral-400">Global Launch Workspace</p>
+                    <p className="text-[9px] text-neutral-400">Unified Social Media Management</p>
                   </div>
                 </div>
                 <MoreHorizontal className="w-4 h-4 text-neutral-400 cursor-pointer" />
@@ -390,7 +390,7 @@ export function SocialComposerSandbox() {
               {/* Instagram Caption */}
               <div className="px-3 pb-4">
                 <p className="leading-relaxed text-[11.5px]">
-                  <span className="font-bold mr-1.5 hover:underline cursor-pointer">socialdesk.app</span>
+                  <span className="font-bold mr-1.5 hover:underline cursor-pointer">planmycanvas</span>
                   <span className="whitespace-pre-line text-neutral-200">{postText}</span>
                 </p>
                 <span className="text-[9px] text-neutral-500 uppercase mt-1.5 block">2 minutes ago</span>
