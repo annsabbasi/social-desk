@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SocialDesk | Command Center for Digital Architects",
+  title: "Plan My Canvas | Command Center for Digital Architects",
   description: "Manage, automate, and dominate across every social platform with the ultimate command center.",
 };
 

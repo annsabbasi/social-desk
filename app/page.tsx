@@ -1,519 +1,1072 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  Twitter,
-  Linkedin,
-  Instagram,
-  Facebook,
-  BarChart3,
-  Calendar,
-  Zap,
-  Users,
-  ArrowRight,
-  Layout,
-  CheckCircle2,
-  PlayCircle,
-  MessageSquare,
-  Shield,
-  Star,
-  ChevronDown,
-  Globe,
-  Sparkles,
-  MousePointer2,
-  Rocket
-} from "lucide-react";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { ArrowRight, ArrowUpRight, Check, Plus } from "lucide-react";
+import { DashboardMockup } from "@/components/dashboard-mockup";
+import { SocialComposerSandbox } from "@/components/social-composer-sandbox";
 
-const SectionHeader = ({ title, subtitle, label }: { title: string, subtitle: string, label?: string }) => (
-  <div className="flex flex-col items-center text-center mb-20">
-    {label && (
-      <motion.span
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        className="text-primary font-bold tracking-widest text-xs uppercase mb-4 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10"
-      >
-        {label}
-      </motion.span>
-    )}
-    <motion.h2
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
-      className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-linear-to-b from-foreground to-foreground/70 bg-clip-text text-transparent"
-    >
-      {title}
-    </motion.h2>
-    <motion.p
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="text-muted-foreground text-lg max-w-2xl"
-    >
-      {subtitle}
-    </motion.p>
-  </div>
-);
+// ─── Design tokens ────────────────────────────────────────────────────────────
+const C = {
+  ivory: "#F7F4EF",
+  cream: "#F0EBE3",
+  border: "#E0D8CE",
+  ink: "#1A1714",
+  muted: "#6B6560",
+  subtle: "#9E9892",
+  dark: "#0D0B09",
+  darkMid: "#1A1714",
+  darkBdr: "rgba(247,244,239,0.1)",
+  bronze: "#B5935A",
+} as const;
 
+// ─── Easing & Transitions ─────────────────────────────────────────────────────
+const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE_SOFT = [0.25, 0.46, 0.45, 0.94] as const;
+
+// ─── Variants ─────────────────────────────────────────────────────────────────
+const vFadeUp = {
+  hidden: { opacity: 0, y: 32 },
+  visible: (d = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.95, ease: EASE, delay: d } }),
+};
+const vFadeIn = {
+  hidden: { opacity: 0 },
+  visible: (d = 0) => ({ opacity: 1, transition: { duration: 0.7, ease: EASE_SOFT, delay: d } }),
+};
+const vSlideLeft = {
+  hidden: { opacity: 0, x: -40 },
+  visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 1.0, ease: EASE, delay: d } }),
+};
+const vSlideRight = {
+  hidden: { opacity: 0, x: 40 },
+  visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 1.0, ease: EASE, delay: d } }),
+};
+
+// ─── Data ──────────────────────────────────────────────────────────────────────
+const CAPABILITIES = [
+  {
+    n: "01", title: "Universal Inbox", tag: "Engagement",
+    body: "Every reply, comment, and direct message from X, LinkedIn, and Instagram converges into one elegantly organised workspace. Assign threads, filter by urgency, and respond with precision — without switching tabs.",
+  },
+  {
+    n: "02", title: "Visual Calendar", tag: "Scheduling",
+    body: "Plan and visualise your cross-platform content strategy at a glance. Drag, drop, copy, and auto-queue drafts into optimal timing slots recommended by AI — from one intuitive scheduling interface.",
+  },
+  {
+    n: "03", title: "AI Composer", tag: "Creation",
+    body: "Instantly refine copy tone, auto-generate relevant hashtags, translate posts, and split long-form content into threads. Your AI co-pilot surfaces the most engaging variation of every message you write.",
+  },
+  {
+    n: "04", title: "Cross-Platform Analytics", tag: "Intelligence",
+    body: "Aggregate followers, click-through rates, and interaction data across every connected channel. Generate presentation-ready reports for clients in a single click, formatted exactly as you need them.",
+  },
+  {
+    n: "05", title: "Team Workspaces", tag: "Collaboration",
+    body: "Assign comment threads to team members, draft posts in private staging areas, and create multi-step approval workflows that protect your brand voice across every piece of outgoing content.",
+  },
+  {
+    n: "06", title: "Bank-Grade Security", tag: "Trust",
+    body: "Secure OAuth integrations protect accounts at every layer. Manage login access for hundreds of channels without sharing credentials — your clients' trust is your most valuable asset.",
+  },
+];
+
+const CASE_STUDIES = [
+  {
+    client: "BrandStudio",
+    type: "Creative Agency · 5 Seats",
+    capability: "Universal Inbox",
+    metric: "15 hrs/wk saved",
+    quote: "Before Plan My Canvas, we were constantly logging in and out of client accounts. Now our entire support team works from one unified inbox and never misses a message.",
+    author: "Clara Reynolds",
+    role: "Founder, BrandStudio",
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=80&h=80&q=80",
+  },
+  {
+    client: "FlowCorp",
+    type: "Marketing Team · 12 Seats",
+    capability: "Visual Calendar",
+    metric: "3× content output",
+    quote: "The visual calendar transformed how we plan campaigns. Drag-and-drop scheduling across six platforms, with AI suggesting our best posting windows — it's unlike anything we've used before.",
+    author: "Marcus Vance",
+    role: "Marketing Director, FlowCorp",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80",
+  },
+  {
+    client: "DevPulse",
+    type: "Enterprise · 45 Seats",
+    capability: "Analytics Suite",
+    metric: "50% lower tool cost",
+    quote: "We consolidated our entire social media toolset into Plan My Canvas. Cut tool spend in half and our team alignment has never been stronger — one platform, one source of truth.",
+    author: "Tariq Mahmood",
+    role: "Head of Social, DevPulse",
+    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=80&h=80&q=80",
+  },
+];
+
+const TIMELINE = [
+  {
+    year: "2022",
+    headline: "Founded",
+    body: "Three former social media managers, exhausted from juggling seven apps, built the tool they always needed. Plan My Canvas was born from frustration and a belief that better was possible.",
+  },
+  {
+    year: "2023",
+    headline: "Public Launch",
+    body: "100 beta teams. X (Twitter), LinkedIn, and Instagram integration. The world's first true unified social inbox — in one elegant workspace. Teams started saving hours every day.",
+  },
+  {
+    year: "2024",
+    headline: "AI Co-Pilot",
+    body: "10,000 teams onboarded. The AI Composer launched — refining copy, generating hashtags, creating threads. Teams began saving an average of eight hours per week, every week.",
+  },
+  {
+    year: "2025",
+    headline: "Enterprise Tier",
+    body: "12,000+ teams. Seven platforms. White-label reporting and enterprise approvals. Plan My Canvas became the command center for major agencies and Fortune 500 social teams worldwide.",
+  },
+];
+
+const FAQS = [
+  {
+    q: "Which social platforms does Plan My Canvas support?",
+    a: "Plan My Canvas integrates fully with X (Twitter), LinkedIn Pages & Profiles, Instagram Business, Facebook Pages, YouTube Channels, TikTok, and Pinterest. New channels are added regularly based on API availability.",
+  },
+  {
+    q: "How does the AI Co-pilot enhance posts?",
+    a: "Our AI assistant is fine-tuned on top-performing social copy. It can refine your draft to be more engaging, trim for character limits, auto-create X threads, or match a specific brand voice — professional, witty, or conversational.",
+  },
+  {
+    q: "Can I manage multiple clients with separate workspaces?",
+    a: "Absolutely. Professional and Enterprise plans support isolated client workspaces, customisable review workflows, and white-label PDF and web analytics reports delivered directly to your clients.",
+  },
+  {
+    q: "Is there a free trial, and can I cancel anytime?",
+    a: "Yes — a fully functional 14-day trial is available on all plans with no credit card required. You can upgrade, downgrade, or cancel at any time directly from your billing settings.",
+  },
+  {
+    q: "How long does setup take?",
+    a: "Most teams are fully connected in under five minutes. Connect your social accounts via OAuth, invite team members, and you're live — no migration, no training, no headaches.",
+  },
+];
+
+const PRICING = [
+  {
+    name: "Starter",
+    tagline: "For creators and freelancers",
+    mo: 19, yr: "Free",
+    items: ["Up to 3 social profiles", "1 user seat", "100 scheduled posts/mo", "Basic analytics", "Standard support"],
+    cta: "Begin with Starter",
+    featured: false,
+  },
+  {
+    name: "Professional",
+    tagline: "For growing teams and agencies",
+    mo: 49, yr: 39,
+    items: ["Up to 15 social profiles", "3 team seats", "Unlimited scheduling", "Universal Inbox", "AI Co-pilot", "Custom PDF reports", "Priority support"],
+    cta: "Begin with Professional",
+    featured: true,
+  },
+  {
+    name: "Enterprise",
+    tagline: "For large-scale organisations",
+    mo: 149, yr: 119,
+    items: ["Unlimited profiles", "10 team seats", "Approval workflows", "White-label reports", "SLA & API access", "Dedicated account lead"],
+    cta: "Request Enterprise Demo",
+    featured: false,
+  },
+];
+
+// ─── Micro Components ──────────────────────────────────────────────────────────
+
+function Label({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
+  return (
+    <p className="text-[10px] tracking-[0.28em] uppercase mb-4"
+      style={{ color: light ? `${C.ivory}40` : C.subtle, fontFamily: "var(--font-dm-sans)" }}>
+      {children}
+    </p>
+  );
+}
+
+function Heading({
+  children, light = false, size = "lg", className = "",
+}: {
+  children: React.ReactNode; light?: boolean; size?: "sm" | "md" | "lg" | "xl"; className?: string;
+}) {
+  const sizes = { xl: "text-[52px] md:text-[68px] lg:text-[84px]", lg: "text-[40px] md:text-[52px] lg:text-[60px]", md: "text-[32px] md:text-[42px] lg:text-[48px]", sm: "text-[24px] md:text-[30px]" };
+  return (
+    <h2 className={`font-extrabold leading-[0.9] tracking-tight ${sizes[size]} ${className}`}
+      style={{ color: light ? C.ivory : C.ink, fontFamily: "var(--font-display)" }}>
+      {children}
+    </h2>
+  );
+}
+
+function Divider({ light = false }: { light?: boolean }) {
+  return <div className="w-full h-px" style={{ background: light ? C.darkBdr : C.border }} />;
+}
+
+function CapRow({ n, title, tag, body, idx }: typeof CAPABILITIES[0] & { idx: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div ref={ref} className="group py-10 md:py-12 border-b cursor-default"
+      style={{ borderColor: C.border }}
+      initial="hidden" animate={inView ? "visible" : "hidden"} custom={idx * 0.055} variants={vFadeUp}>
+      <div className="grid grid-cols-12 gap-4 md:gap-8 items-baseline">
+        <span className="col-span-2 md:col-span-1 text-[10px] tracking-[0.2em] uppercase"
+          style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>{n}</span>
+        <h3 className="col-span-10 md:col-span-3 text-[20px] md:text-[24px] font-extrabold tracking-tight"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{title}</h3>
+        <p className="col-span-12 md:col-span-6 md:pl-4 text-[14px] leading-[1.8]"
+          style={{ color: C.muted }}>{body}</p>
+        <div className="col-span-12 md:col-span-2 flex md:justify-end">
+          <span className="text-[9px] tracking-[0.2em] uppercase px-3 py-1.5 border"
+            style={{ color: C.subtle, borderColor: C.border }}>{tag}</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function CaseStudyRow({ cs, idx }: { cs: typeof CASE_STUDIES[0]; idx: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const isEven = idx % 2 === 0;
+  return (
+    <motion.div ref={ref} className="border-b py-20 md:py-24"
+      style={{ borderColor: C.border }}
+      initial="hidden" animate={inView ? "visible" : "hidden"}>
+      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center ${isEven ? "" : "lg:flex-row-reverse"}`}>
+        {/* Text side */}
+        <motion.div className={isEven ? "order-1" : "order-1 lg:order-2"}
+          variants={isEven ? vSlideLeft : vSlideRight} custom={0}>
+          <div className="flex items-center gap-4 mb-8">
+            <span className="text-[10px] tracking-[0.2em] uppercase px-3 py-1.5 border"
+              style={{ color: C.subtle, borderColor: C.border, fontFamily: "var(--font-dm-sans)" }}>
+              {cs.capability}
+            </span>
+            <span className="text-[11px]" style={{ color: C.subtle }}>{cs.type}</span>
+          </div>
+          <p className="text-[22px] md:text-[26px] lg:text-[30px] font-semibold leading-[1.4] mb-8"
+            style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
+            &ldquo;{cs.quote}&rdquo;
+          </p>
+          <div className="flex items-center gap-4 mb-10">
+            <img src={cs.avatar} alt={cs.author}
+              className="w-10 h-10 rounded-full object-cover"
+              style={{ border: `1px solid ${C.border}` }} />
+            <div>
+              <p className="text-[13px]" style={{ color: C.ink }}>{cs.author}</p>
+              <p className="text-[10px] tracking-[0.15em] uppercase mt-0.5"
+                style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>{cs.role}</p>
+            </div>
+          </div>
+          <div className="flex items-baseline gap-3">
+            <span className="text-[52px] md:text-[64px] font-black leading-none"
+              style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
+              {cs.metric.split(" ")[0]}
+            </span>
+            <span className="text-[13px] leading-snug max-w-[120px]"
+              style={{ color: C.muted }}>
+              {cs.metric.split(" ").slice(1).join(" ")}
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Visual side */}
+        <motion.div className={`${isEven ? "order-2" : "order-2 lg:order-1"} relative`}
+          variants={isEven ? vSlideRight : vSlideLeft} custom={0.1}>
+          <div className="relative overflow-hidden rounded-2xl"
+            style={{ border: `1px solid ${C.border}`, boxShadow: "0 24px 60px rgba(26,23,20,0.1)" }}>
+            <div className="absolute top-0 left-0 right-0 h-1"
+              style={{ background: C.bronze }} />
+            <div className="p-8" style={{ background: C.cream }}>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-[18px] font-bold" style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
+                    {cs.client}
+                  </p>
+                  <p className="text-[11px] tracking-[0.12em] uppercase mt-1"
+                    style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>{cs.type}</p>
+                </div>
+                <ArrowUpRight style={{ width: 18, height: 18, color: C.subtle }} />
+              </div>
+              <Divider />
+              <div className="mt-6 grid grid-cols-2 gap-6">
+                {[
+                  ["Capability", cs.capability],
+                  ["Result", cs.metric],
+                  ["Team", cs.type.split("·")[1]?.trim() || ""],
+                  ["Status", "Active"],
+                ].map(([k, v]) => (
+                  <div key={k}>
+                    <p className="text-[9px] tracking-[0.2em] uppercase mb-1"
+                      style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>{k}</p>
+                    <p className="text-[14px]" style={{ color: C.ink }}>{v}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Decoration */}
+          <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full -z-10 opacity-30"
+            style={{ background: C.bronze, filter: "blur(40px)" }} />
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+function TimelineItem({ year, headline, body, idx }: typeof TIMELINE[0] & { idx: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div ref={ref} className="grid grid-cols-12 gap-6 md:gap-10 border-b py-12"
+      style={{ borderColor: C.border }}
+      initial="hidden" animate={inView ? "visible" : "hidden"} custom={idx * 0.1} variants={vFadeUp}>
+      <div className="col-span-12 md:col-span-2">
+        <span className="text-[40px] md:text-[52px] font-black leading-none"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{year}</span>
+      </div>
+      <div className="col-span-12 md:col-span-3 md:pt-3">
+        <p className="text-[20px] md:text-[24px] font-bold"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{headline}</p>
+      </div>
+      <div className="col-span-12 md:col-span-7 md:pt-3">
+        <p className="text-[14px] leading-[1.85]" style={{ color: C.muted }}>{body}</p>
+      </div>
+    </motion.div>
+  );
+}
+
+function FaqItem({ q, a, idx, open, onToggle }: typeof FAQS[0] & { idx: number; open: boolean; onToggle: () => void }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  return (
+    <motion.div ref={ref} className="border-b" style={{ borderColor: C.border }}
+      initial="hidden" animate={inView ? "visible" : "hidden"} custom={idx * 0.07} variants={vFadeUp}>
+      <button onClick={onToggle}
+        className="w-full flex items-start justify-between py-7 text-left gap-6 group">
+        <span className="text-[17px] md:text-[20px] font-bold flex-1 group-hover:opacity-60 transition-opacity duration-300"
+          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{q}</span>
+        <motion.div animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.3, ease: EASE_SOFT }}>
+          <Plus style={{ width: 16, height: 16, color: C.subtle, marginTop: 4, flexShrink: 0 }} />
+        </motion.div>
+      </button>
+      <motion.div initial={false}
+        animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
+        transition={{ duration: 0.45, ease: EASE_SOFT }}
+        className="overflow-hidden">
+        <p className="pb-7 text-[14px] leading-[1.85] max-w-2xl" style={{ color: C.muted }}>{a}</p>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const [scrolled, setScrolled] = useState(false);
+  const [billing, setBilling] = useState<"mo" | "yr">("yr");
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  // Contact form
+  const [form, setForm] = useState({ name: "", email: "", company: "", message: "" });
+  const [formSent, setFormSent] = useState(false);
+
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+  const handleSubscribe = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubscribed(true);
+    setEmail("");
+  };
+
+  const handleFormSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormSent(true);
+  };
+
+  // ─── Shared nav link style ───────────────────────────────────────────────
+  const navLinkStyle = (isScrolled: boolean) => ({
+    color: isScrolled ? C.muted : `${C.ivory}65`,
+    fontFamily: "var(--font-dm-sans)",
+  });
 
   return (
-    <div className="flex flex-col min-h-screen bg-background selection:bg-primary/30 selection:text-primary-foreground overflow-x-hidden">
-      <Navbar />
+    <div className="min-h-screen overflow-x-hidden" style={{ background: C.ivory }}>
 
-      <main className="flex-grow relative">
-        {/* Abstract Background Shapes */}
-        <div className="absolute top-0 left-0 w-full h-[120vh] pointer-events-none -z-10 overflow-hidden">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 90, 0],
-              x: [0, 100, 0]
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-primary/5 rounded-full blur-[120px]"
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              rotate: [0, -45, 0],
-              x: [0, -50, 0]
-            }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute top-[20%] -right-[5%] w-[40%] h-[50%] bg-primary/10 rounded-full blur-[100px]"
-          />
+      {/* ════════════════════════════════════════════════════════════════════
+          NAVIGATION
+      ════════════════════════════════════════════════════════════════════ */}
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+        style={{
+          background: scrolled ? `${C.ivory}f0` : "transparent",
+          backdropFilter: scrolled ? "blur(16px)" : "none",
+          borderBottom: scrolled ? `1px solid ${C.border}` : "1px solid transparent",
+        }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 h-[56px] flex items-center justify-between">
+          <a href="/" className="text-[13px] font-medium tracking-[0.18em] uppercase transition-colors duration-300"
+            style={{ color: scrolled ? C.ink : C.ivory, fontFamily: "var(--font-dm-sans)" }}>
+            Plan My Canvas
+          </a>
+          <nav className="hidden md:flex items-center gap-10">
+            {[["Features", "features"], ["Platform", "platform"], ["Stories", "stories"], ["Pricing", "pricing"]].map(([l, id]) => (
+              <button key={id} onClick={() => scrollTo(id)}
+                className="text-[10px] tracking-[0.18em] uppercase transition-colors duration-300 hover:opacity-100"
+                style={navLinkStyle(scrolled)}>{l}</button>
+            ))}
+          </nav>
+          <div className="flex items-center gap-6">
+            <button className="text-[10px] tracking-[0.18em] uppercase transition-colors duration-300"
+              style={navLinkStyle(scrolled)}>Sign In</button>
+            <a href="#pricing"
+              className="text-[10px] tracking-[0.18em] uppercase px-5 py-2.5 transition-colors duration-200"
+              style={{ background: scrolled ? C.ink : C.ivory, color: scrolled ? C.ivory : C.dark, fontFamily: "var(--font-dm-sans)" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}>
+              Start Free
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          HERO — Dark, cinematic, full-screen
+      ════════════════════════════════════════════════════════════════════ */}
+      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-between overflow-hidden"
+        style={{ background: C.dark }}>
+        {/* Ambient glow */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-[30%] left-[20%] w-[600px] h-[600px] rounded-full"
+            style={{ background: `${C.bronze}10`, filter: "blur(120px)" }} />
+          <div className="absolute top-[50%] right-[10%] w-[400px] h-[400px] rounded-full"
+            style={{ background: `${C.ivory}05`, filter: "blur(100px)" }} />
         </div>
 
-        {/* Hero Section */}
-        <section className="relative pt-32 pb-20 md:pt-48 md:pb-40 overflow-hidden">
-          <div className="container mx-auto px-4 md:px-8">
-            <div className="flex flex-col items-center text-center max-w-5xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-8 p-1 rounded-full bg-linear-to-r from-primary/20 via-primary/40 to-primary/20 backdrop-blur-md border border-primary/30 inline-flex items-center gap-2 pr-4"
-              >
-                <span className="bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ml-1">New</span>
-                <span className="text-xs font-medium text-foreground/80">AI-Powered Analytics 2.0 is now live</span>
-                <ArrowRight className="h-3 w-3 text-primary" />
-              </motion.div>
+        {/* Headline area */}
+        <motion.div className="flex-1 max-w-[1440px] mx-auto w-full px-6 md:px-12 pt-40 md:pt-48 pb-12"
+          style={{ opacity: heroOpacity, y: heroY }}>
+          {/* Eyebrow */}
+          <motion.p className="text-[10px] tracking-[0.32em] uppercase mb-16"
+            style={{ color: `${C.ivory}40`, fontFamily: "var(--font-dm-sans)" }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.2 }}>
+            Unified Social Management Platform
+          </motion.p>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="text-5xl md:text-8xl font-black tracking-tight leading-[0.9] mb-8 bg-linear-to-b from-foreground via-foreground to-foreground/60 bg-clip-text text-transparent italic"
-              >
-                SOCIAL MEDIA <br />
-                <span className="text-primary not-italic">REMASTERED.</span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl leading-relaxed"
-              >
-                The ultimate command center for modern digital architects.
-                Manage, automate, and dominate across every platform.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex flex-col sm:flex-row gap-6 items-center"
-              >
-                <Button size="lg" className="h-16 px-10 text-lg font-bold rounded-2xl shadow-xl shadow-primary/30 hover:scale-105 transition-transform active:scale-95">
-                  Launch Command Center
-                  <Rocket className="ml-2 h-5 w-5" />
-                </Button>
-                <Button variant="outline" size="lg" className="h-16 px-10 text-lg rounded-2xl bg-background/50 backdrop-blur border-border/50 hover:bg-muted/50 transition-colors">
-                  View Blueprints
-                </Button>
-              </motion.div>
-            </div>
-
-            {/* Outclass Dashboard Preview */}
-            <motion.div
-              style={{ scale, opacity }}
-              className="mt-24 relative max-w-6xl mx-auto group"
-            >
-              <div className="absolute -inset-1 bg-linear-to-r from-primary/50 via-primary/20 to-primary/50 rounded-[2.5rem] blur-2xl opacity-30 transition duration-1000 group-hover:opacity-50"></div>
-              <div className="relative bg-black/5 dark:bg-white/5 backdrop-blur-3xl rounded-[2rem] border border-white/20 p-4 shadow-2xl shadow-primary/10 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-10 border-b border-white/10 flex items-center px-6 gap-2 bg-white/5">
-                   <div className="flex gap-1.5">
-                     <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                     <div className="w-3 h-3 rounded-full bg-amber-500/50"></div>
-                     <div className="w-3 h-3 rounded-full bg-emerald-500/50"></div>
-                   </div>
-                   <div className="mx-auto text-[10px] text-white/30 font-mono tracking-widest uppercase">dashboard.socialdesk.io</div>
-                </div>
-                <div className="pt-10 aspect-video bg-linear-to-br from-primary/5 via-background to-primary/5 flex items-center justify-center overflow-hidden">
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    <Layout className="h-32 w-32 text-primary/20" />
-                  </motion.div>
-                  {/* Decorative Dashboard Elements */}
-                  <div className="absolute top-20 left-10 w-48 h-32 rounded-xl bg-white/5 border border-white/10 p-4">
-                     <div className="w-full h-2 bg-primary/20 rounded-full mb-3"></div>
-                     <div className="w-2/3 h-2 bg-white/10 rounded-full mb-6"></div>
-                     <div className="flex justify-between items-end h-10">
-                        <div className="w-2 bg-primary/40 rounded-t-sm h-[40%]"></div>
-                        <div className="w-2 bg-primary/60 rounded-t-sm h-[70%]"></div>
-                        <div className="w-2 bg-primary/80 rounded-t-sm h-[90%]"></div>
-                        <div className="w-2 bg-primary/40 rounded-t-sm h-[50%]"></div>
-                     </div>
-                  </div>
-                  <div className="absolute bottom-10 right-10 w-64 h-40 rounded-xl bg-white/5 border border-white/10 p-6 flex flex-col gap-4">
-                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20"></div>
-                        <div className="flex-1 space-y-1.5">
-                           <div className="w-full h-1.5 bg-white/10 rounded-full"></div>
-                           <div className="w-1/2 h-1.5 bg-white/5 rounded-full"></div>
-                        </div>
-                     </div>
-                     <div className="flex-1 bg-white/5 rounded-lg flex items-center justify-center font-mono text-[8px] text-white/20 uppercase tracking-[0.2em]">Live Feed Analytics</div>
-                  </div>
-                </div>
+          {/* Main headline */}
+          <div className="max-w-[1100px]">
+            {[
+              { text: "Command", accent: false },
+              { text: "Every", accent: false },
+              { text: "Voice.", accent: true },
+              { text: "Own Every", accent: false },
+              { text: "Channel.", accent: true },
+            ].map(({ text, accent }, i) => (
+              <div key={i} className="overflow-hidden">
+                <motion.span className="block font-black leading-[0.88] tracking-tight"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: accent ? C.bronze : C.ivory,
+                    fontSize: "clamp(56px, 8.5vw, 124px)",
+                  }}
+                  initial={{ y: "110%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 1.0, ease: EASE, delay: 0.4 + i * 0.1 }}>
+                  {text}
+                </motion.span>
               </div>
-
-              {/* Floating SVG Animation Elements */}
-              <motion.div
-                animate={{
-                  y: [0, -20, 0],
-                  rotate: [0, 5, 0]
-                }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-12 -right-12 w-24 h-24 bg-primary/20 rounded-full blur-xl mix-blend-screen"
-              />
-              <motion.div
-                animate={{
-                  y: [0, 20, 0],
-                  rotate: [0, -10, 0]
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-16 -left-16 w-32 h-32 bg-primary/10 rounded-full blur-2xl mix-blend-screen"
-              />
-            </motion.div>
+            ))}
           </div>
-        </section>
 
-        {/* Marquee Platform Section */}
-        <section className="py-20 border-y border-white/5 bg-primary/5 backdrop-blur-sm overflow-hidden">
-          <div className="flex gap-16 whitespace-nowrap overflow-hidden group">
-            <motion.div
-              animate={{ x: [0, -1000] }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="flex gap-16 items-center"
-            >
-              {[...Array(2)].map((_, i) => (
+          {/* Slogan */}
+          <motion.p className="mt-8 text-[18px] md:text-[22px] font-medium leading-relaxed max-w-xl"
+            style={{ color: `${C.ivory}60`, fontFamily: "var(--font-dm-sans)" }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.0, ease: EASE, delay: 1.0 }}>
+            All accounts. One Canvas.
+          </motion.p>
+        </motion.div>
+
+        {/* Bottom bar with stats + CTAs */}
+        <motion.div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 pb-14"
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.3, ease: EASE }}>
+          <div className="h-px mb-10 w-full" style={{ background: C.darkBdr }} />
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-10">
+              {[["12,000+", "Social Teams"], ["7", "Platforms"], ["99.9%", "Uptime SLA"]].map(([v, l]) => (
+                <div key={l}>
+                  <p className="text-[36px] md:text-[44px] font-black leading-none"
+                    style={{ color: C.ivory, fontFamily: "var(--font-display)" }}>{v}</p>
+                  <p className="text-[10px] tracking-[0.2em] uppercase mt-2"
+                    style={{ color: `${C.ivory}40`, fontFamily: "var(--font-dm-sans)" }}>{l}</p>
+                </div>
+              ))}
+            </div>
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a href="#pricing"
+                className="group inline-flex items-center gap-3 px-7 py-4 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.cream; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; }}>
+                Begin Free Trial
+                <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
+              </a>
+              <button onClick={() => scrollTo("platform")}
+                className="px-7 py-4 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                style={{ color: `${C.ivory}50`, border: `1px solid ${C.ivory}20`, fontFamily: "var(--font-dm-sans)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}90`; (e.currentTarget as HTMLElement).style.borderColor = `${C.ivory}40`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}50`; (e.currentTarget as HTMLElement).style.borderColor = `${C.ivory}20`; }}>
+                Explore Platform
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2, duration: 1 }}>
+          <div className="w-px h-10 overflow-hidden" style={{ background: `${C.ivory}15` }}>
+            <motion.div className="w-full" style={{ background: C.bronze, height: "40px" }}
+              animate={{ y: ["-100%", "200%"] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear", repeatDelay: 0.3 }} />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          TICKER
+      ════════════════════════════════════════════════════════════════════ */}
+      <div className="h-12 flex items-center overflow-hidden border-y" style={{ background: C.darkMid, borderColor: C.darkBdr }}>
+        <div className="flex animate-marquee whitespace-nowrap">
+          {[...Array(3)].map((_, si) => (
+            <span key={si} className="flex items-center">
+              {["X (TWITTER)", "LINKEDIN", "INSTAGRAM", "FACEBOOK", "TIKTOK", "PINTEREST", "YOUTUBE"].map((p, i) => (
                 <React.Fragment key={i}>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Twitter className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">TWITTER</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Linkedin className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">LINKEDIN</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Instagram className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">INSTAGRAM</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Facebook className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">FACEBOOK</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <svg role="img" viewBox="0 0 24 24" className="h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.966 1.406-5.966s-.359-.72-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg> <span className="text-3xl font-bold tracking-tighter">PINTEREST</span>
-                  </div>
+                  <span className="text-[10px] tracking-[0.28em] uppercase mx-8"
+                    style={{ color: `${C.ivory}35`, fontFamily: "var(--font-dm-sans)" }}>{p}</span>
+                  <span style={{ color: `${C.ivory}15` }}>·</span>
                 </React.Fragment>
               ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          ABOUT
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-32 md:py-48" style={{ background: C.ivory }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-start">
+            {/* Left column */}
+            <motion.div className="lg:col-span-5"
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
+              variants={vSlideLeft} custom={0}>
+              <Label>The Company</Label>
+              <Heading size="lg" className="mb-10">
+                We didn&apos;t build another dashboard.{" "}
+                <span style={{ color: C.bronze }}>We built a command centre.</span>
+              </Heading>
+              <p className="text-[15px] leading-[1.85] mb-8" style={{ color: C.muted }}>
+                Social media management has always meant switching between apps, missing messages, and losing hours to admin. Plan My Canvas changes that — one unified workspace for every platform, every conversation, every metric.
+              </p>
+              <p className="text-[15px] leading-[1.85]" style={{ color: C.muted }}>
+                Built by three former social media managers who were exhausted by the chaos, Plan My Canvas brings precision and clarity to the world&apos;s most dynamic communications medium.
+              </p>
             </motion.div>
-          </div>
-        </section>
 
-        {/* Bento Grid Features */}
-        <section id="features" className="py-40">
-          <div className="container mx-auto px-4 md:px-8">
-            <SectionHeader
-              label="Intelligence"
-              title="Built for the high-frequency creator"
-              subtitle="Proprietary tech that works faster than you can think. Scale your brand across the digital landscape."
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto md:h-[800px]">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-8 relative rounded-[2.5rem] bg-linear-to-br from-primary/20 via-primary/5 to-primary/20 border border-white/10 overflow-hidden group"
-              >
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="p-12 h-full flex flex-col">
-                  <div className="h-16 w-16 rounded-2xl bg-primary flex items-center justify-center mb-8 shadow-xl shadow-primary/30">
-                    <Sparkles className="h-8 w-8 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-4xl font-bold mb-4">Neural Post Engine</h3>
-                  <p className="text-lg text-muted-foreground max-w-md">Our AI doesn't just write captions; it understands your brand voice and predicts engagement metrics before you hit send.</p>
-                  <div className="mt-auto pt-12 flex items-center gap-6">
-                    <div className="flex -space-x-4">
-                      {[...Array(4)].map((_, i) => (
-                        <div key={i} className="h-12 w-12 rounded-full border-2 border-background bg-muted" />
-                      ))}
-                    </div>
-                    <span className="text-sm font-medium text-muted-foreground tracking-wide uppercase">Join 12k+ Power Users</span>
-                  </div>
-                </div>
-                <div className="absolute bottom-0 right-0 w-1/2 h-full bg-linear-to-l from-primary/10 to-transparent pointer-events-none" />
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-4 relative rounded-[2.5rem] bg-card border border-white/10 overflow-hidden p-12 group"
-              >
-                <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-8">
-                  <BarChart3 className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-3xl font-bold mb-4">Real-time <br />Flow State</h3>
-                <p className="text-muted-foreground leading-relaxed">Latency-free analytics that update as the world reacts to your content.</p>
-                <div className="mt-8 h-24 bg-primary/5 rounded-2xl border border-white/5 flex items-center justify-center overflow-hidden">
-                   <motion.div
-                    animate={{ x: [-100, 100] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    className="w-full h-1 bg-linear-to-r from-transparent via-primary/50 to-transparent blur-sm"
-                   />
-                </div>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-4 relative rounded-[2.5rem] bg-card border border-white/10 overflow-hidden p-12 group"
-              >
-                <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-8">
-                  <Globe className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-3xl font-bold mb-4">Global Reach</h3>
-                <p className="text-muted-foreground leading-relaxed">Optimize posting times for every timezone automatically.</p>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-8 relative rounded-[2.5rem] bg-linear-to-br from-muted via-card to-muted border border-white/10 overflow-hidden p-12 group"
-              >
-                <div className="flex flex-col md:flex-row gap-12 items-center h-full">
-                  <div className="flex-1">
-                    <div className="h-16 w-16 rounded-2xl bg-primary flex items-center justify-center mb-8 shadow-xl shadow-primary/30">
-                      <Users className="h-8 w-8 text-primary-foreground" />
-                    </div>
-                    <h3 className="text-4xl font-bold mb-4">Atomic Approval</h3>
-                    <p className="text-lg text-muted-foreground">The most efficient feedback loop for agencies. One-click approvals from clients.</p>
-                  </div>
-                  <div className="flex-1 w-full flex flex-col gap-4">
-                    <div className="h-14 bg-white/5 rounded-xl border border-white/10 flex items-center px-4 justify-between">
-                       <span className="text-sm font-medium">Post Draft #412</span>
-                       <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold uppercase">Pending</span>
-                    </div>
-                    <div className="h-14 bg-white/5 rounded-xl border border-white/10 flex items-center px-4 justify-between translate-x-4">
-                       <span className="text-sm font-medium">Campaign: Summer 24</span>
-                       <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500 font-bold uppercase">Approved</span>
-                    </div>
-                    <div className="h-14 bg-white/5 rounded-xl border border-white/10 flex items-center px-4 justify-between translate-x-8">
-                       <span className="text-sm font-medium">Reels Optimization</span>
-                       <span className="text-[10px] px-2 py-0.5 rounded bg-primary/20 text-primary font-bold uppercase">Ready</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Workflows with SVG Path Animation */}
-        <section className="py-40 bg-black/5 dark:bg-white/5 relative overflow-hidden">
-          <div className="container mx-auto px-4 md:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div>
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  className="text-primary font-bold tracking-widest text-xs uppercase mb-4 block"
-                >
-                  Blueprint
-                </motion.span>
-                <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight italic uppercase tracking-tighter">
-                  How we build your <br />
-                  <span className="text-primary not-italic">Empire.</span>
-                </h2>
-                <div className="space-y-12">
-                  {[
-                    { step: "01", title: "Sync the Grid", desc: "One-click OAuth integration with every social protocol. Secure, encrypted, and instantaneous." },
-                    { step: "02", title: "Automate Intent", desc: "Set your strategy and let our AI agents handle the repetitive grunt work." },
-                    { step: "03", title: "Optimize Output", desc: "Analyze the data flow and adjust your trajectory for maximum growth." }
-                  ].map((item, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.2 }}
-                      className="flex gap-8 group"
-                    >
-                      <div className="text-4xl font-black text-primary/20 group-hover:text-primary transition-colors duration-500 shrink-0 select-none">{item.step}</div>
-                      <div>
-                        <h4 className="text-xl font-bold mb-2 uppercase tracking-wide group-hover:translate-x-2 transition-transform duration-500">{item.title}</h4>
-                        <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-              <div className="relative aspect-square flex items-center justify-center">
-                 <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] animate-pulse" />
-                 <svg viewBox="0 0 200 200" className="w-full h-full max-w-md drop-shadow-2xl">
-                    <motion.path
-                      d="M100 20 C140 20 180 60 180 100 C180 140 140 180 100 180 C60 180 20 140 20 100 C20 60 60 20 100 20"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                      className="text-primary/20"
-                    />
-                    <motion.circle
-                      cx="100" cy="20" r="4"
-                      className="fill-primary"
-                      animate={{
-                        offsetDistance: ["0%", "100%"]
-                      }}
-                      transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                      style={{
-                        offsetPath: "path('M100 20 C140 20 180 60 180 100 C180 140 140 180 100 180 C60 180 20 140 20 100 C20 60 60 20 100 20')"
-                      }}
-                    />
-                    <motion.path
-                      d="M40 100 L160 100"
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                      className="text-primary/20"
-                    />
-                    <motion.path
-                      d="M100 40 L100 160"
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                      className="text-primary/20"
-                    />
-                    <g className="text-primary">
-                      <rect x="85" y="85" width="30" height="30" rx="4" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="1" />
-                      <path d="M100 90 L100 110 M90 100 L110 100" stroke="currentColor" strokeWidth="1" />
-                    </g>
-                 </svg>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing Section - Ultra Modern */}
-        <section id="pricing" className="py-40">
-          <div className="container mx-auto px-4 md:px-8">
-            <SectionHeader
-              label="Pricing"
-              title="Scale at the speed of thought"
-              subtitle="Choose your tier and unlock the future of social management."
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[
-                {
-                  name: "SOLO",
-                  price: "0",
-                  features: ["3 Accounts", "Essential AI", "Daily Analytics"]
-                },
-                {
-                  name: "ELITE",
-                  price: "49",
-                  features: ["20 Accounts", "Full AI Suite", "Instant Approvals", "Priority Flow"],
-                  featured: true
-                },
-                {
-                  name: "EMPIRE",
-                  price: "199",
-                  features: ["Unlimited Sync", "Custom AI Models", "White Label Command", "Dedicated Architect"]
-                }
-              ].map((plan, idx) => (
-                <motion.div
-                  key={idx}
-                  whileHover={{ y: -10 }}
-                  className={`p-10 rounded-[3rem] border flex flex-col h-full group transition-all duration-500 ${plan.featured ? 'bg-primary text-primary-foreground border-primary shadow-2xl shadow-primary/30' : 'bg-card border-white/5 hover:border-primary/50'}`}
-                >
-                  <div className={`text-xs font-black tracking-[0.3em] uppercase mb-12 ${plan.featured ? 'text-primary-foreground/50' : 'text-primary'}`}>{plan.name}</div>
-                  <div className="flex items-baseline gap-2 mb-12">
-                    <span className="text-6xl font-black italic leading-none">${plan.price}</span>
-                    <span className={`text-sm uppercase font-bold tracking-widest ${plan.featured ? 'text-primary-foreground/50' : 'text-muted-foreground'}`}>/mo</span>
-                  </div>
-                  <div className="space-y-6 flex-grow mb-12">
-                    {plan.features.map((f, i) => (
-                      <div key={i} className="flex items-center gap-4 text-sm font-medium">
-                        <div className={`h-1.5 w-1.5 rounded-full ${plan.featured ? 'bg-primary-foreground' : 'bg-primary'}`} />
-                        {f}
+            {/* Right column — abstract stat panel */}
+            <motion.div className="lg:col-span-7 lg:pl-8"
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
+              variants={vSlideRight} custom={0.15}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                {/* Top: accent bar */}
+                <div className="h-1 w-full" style={{ background: C.bronze }} />
+                <div className="p-10 md:p-14" style={{ background: C.cream }}>
+                  <div className="grid grid-cols-2 gap-10 mb-14">
+                    {[
+                      ["2022", "Year Founded"],
+                      ["12,000+", "Active Teams"],
+                      ["7", "Platforms"],
+                      ["99.9%", "Uptime SLA"],
+                    ].map(([val, lbl]) => (
+                      <div key={lbl} className="border-l pl-6" style={{ borderColor: C.border }}>
+                        <p className="text-[42px] md:text-[52px] font-black leading-none"
+                          style={{ color: C.ink, fontFamily: "var(--font-display)" }}>{val}</p>
+                        <p className="text-[10px] tracking-[0.2em] uppercase mt-2"
+                          style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>{lbl}</p>
                       </div>
                     ))}
                   </div>
-                  <Button
-                    variant={plan.featured ? "secondary" : "default"}
-                    className={`h-16 rounded-2xl font-black uppercase tracking-widest text-xs transition-all duration-500 ${plan.featured ? 'bg-white text-black hover:bg-white/90' : 'group-hover:shadow-lg group-hover:shadow-primary/20'}`}
-                  >
-                    Select Plan
-                  </Button>
-                </motion.div>
+                  <Divider />
+                  <p className="text-[20px] md:text-[24px] font-extrabold leading-[1.3] mt-10"
+                    style={{ color: C.ink, fontFamily: "var(--font-display)" }}>
+                    &ldquo;One platform. Every channel.{" "}
+                    <span style={{ color: C.bronze }}>Infinite clarity.</span>&rdquo;
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          CAPABILITIES
+      ════════════════════════════════════════════════════════════════════ */}
+      <section id="features" className="py-32 md:py-40 scroll-mt-14" style={{ background: C.ivory }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between border-b pb-10 mb-2"
+            style={{ borderColor: C.border }}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label>Platform Capabilities</Label>
+              <Heading size="lg">Six Superpowers</Heading>
+            </motion.div>
+            <motion.p className="hidden md:block text-[14px] leading-[1.8] max-w-xs text-right"
+              style={{ color: C.muted }}
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeIn} custom={0.2}>
+              Built with intention for teams who demand precision and creativity in equal measure.
+            </motion.p>
+          </div>
+          {CAPABILITIES.map((c, i) => <CapRow key={i} {...c} idx={i} />)}
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          PLATFORM PREVIEW — Dark, cinematic
+      ════════════════════════════════════════════════════════════════════ */}
+      <section id="platform" className="py-32 md:py-40 scroll-mt-14" style={{ background: C.dark }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="text-center mb-16">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label light>Interactive Preview</Label>
+              <Heading size="lg" light>The Workspace</Heading>
+              <p className="mt-5 text-[14px] leading-[1.8] max-w-md mx-auto"
+                style={{ color: `${C.ivory}45` }}>
+                Explore the platform live. Switch between Universal Inbox, Visual Calendar, and Analytics.
+              </p>
+            </motion.div>
+          </div>
+          <motion.div className="rounded-xl overflow-hidden"
+            style={{ border: `1px solid ${C.darkBdr}`, boxShadow: "0 40px 100px rgba(0,0,0,0.6)" }}
+            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1.1, ease: EASE, delay: 0.15 }}>
+            <DashboardMockup />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          CASE STUDIES
+      ════════════════════════════════════════════════════════════════════ */}
+      <section id="stories" className="py-32 md:py-40 scroll-mt-14" style={{ background: C.cream }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between border-b pb-10"
+            style={{ borderColor: C.border }}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label>Client Stories</Label>
+              <Heading size="lg">Proof in Practice</Heading>
+            </motion.div>
+            <motion.p className="hidden md:block text-[14px] leading-[1.8] max-w-xs text-right"
+              style={{ color: C.muted }}
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeIn} custom={0.2}>
+              Real teams, real results. See how Plan My Canvas transforms daily workflow.
+            </motion.p>
+          </div>
+          {CASE_STUDIES.map((cs, i) => <CaseStudyRow key={i} cs={cs} idx={i} />)}
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          LIVE COMPOSER
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-32 md:py-40" style={{ background: C.ivory }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            <motion.div className="lg:col-span-4"
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label>Live Demonstration</Label>
+              <Heading size="md" className="mb-6">Try It Now</Heading>
+              <p className="text-[14px] leading-[1.85]" style={{ color: C.muted }}>
+                Type your copy, generate AI improvements, or toggle an image. Watch the composer adapt to every platform&apos;s formatting in real time.
+              </p>
+            </motion.div>
+            <motion.div className="lg:col-span-8"
+              initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 1.1, ease: EASE, delay: 0.2 }}>
+              <div className="rounded-xl overflow-hidden"
+                style={{ border: `1px solid ${C.border}`, boxShadow: "0 20px 60px rgba(26,23,20,0.07)" }}>
+                <SocialComposerSandbox />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          TIMELINE / EXPERIENCE
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-32 md:py-40" style={{ background: C.cream }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between border-b pb-10 mb-2"
+            style={{ borderColor: C.border }}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label>The Journey</Label>
+              <Heading size="lg">Our Story</Heading>
+            </motion.div>
+          </div>
+          {TIMELINE.map((t, i) => <TimelineItem key={i} {...t} idx={i} />)}
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          PRICING
+      ════════════════════════════════════════════════════════════════════ */}
+      <section id="pricing" className="py-32 md:py-40 scroll-mt-14" style={{ background: C.ivory }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between border-b pb-10 mb-16"
+            style={{ borderColor: C.border }}>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label>Investment</Label>
+              <Heading size="lg">Pricing</Heading>
+            </motion.div>
+            <motion.div className="mt-8 md:mt-0"
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeIn} custom={0.2}>
+              <div className="inline-flex border" style={{ borderColor: C.border }}>
+                {([["mo", "Monthly"], ["yr", "Annual — Save 20%"]] as const).map(([key, lbl]) => (
+                  <button key={key} onClick={() => setBilling(key)}
+                    className="px-5 py-2.5 text-[10px] tracking-[0.18em] uppercase transition-all duration-200"
+                    style={{ fontFamily: "var(--font-dm-sans)", background: billing === key ? C.ink : "transparent", color: billing === key ? C.ivory : C.muted }}>
+                    {lbl}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+            {PRICING.map((p, i) => (
+              <motion.div key={i} className="p-8 md:p-10 flex flex-col"
+                style={{ background: p.featured ? C.ink : "transparent", border: `1px solid ${p.featured ? C.ink : C.border}`, marginLeft: i > 0 ? "-1px" : 0 }}
+                initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}
+                custom={i * 0.1} variants={vFadeUp}>
+                <div className="mb-8">
+                  <p className="text-[10px] tracking-[0.25em] uppercase mb-3"
+                    style={{ color: p.featured ? `${C.ivory}50` : C.subtle, fontFamily: "var(--font-dm-sans)" }}>{p.tagline}</p>
+                  <Heading size="sm" light={p.featured}>{p.name}</Heading>
+                </div>
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-[52px] font-black leading-none"
+                      style={{ color: p.featured ? C.ivory : C.ink, fontFamily: "var(--font-display)" }}>
+                      ${p[billing]}
+                    </span>
+                    <span className="text-[12px]" style={{ color: p.featured ? `${C.ivory}45` : C.subtle, fontFamily: "var(--font-dm-sans)" }}>/mo</span>
+                  </div>
+                </div>
+                <div className="flex-1 border-t pt-8 mb-8" style={{ borderColor: p.featured ? `${C.ivory}15` : C.border }}>
+                  <ul className="flex flex-col gap-4">
+                    {p.items.map((item, fi) => (
+                      <li key={fi} className="flex items-start gap-3 text-[13px] leading-snug"
+                        style={{ color: p.featured ? `${C.ivory}70` : C.muted }}>
+                        <Check style={{ width: 13, height: 13, marginTop: 2, color: p.featured ? C.ivory : C.ink, flexShrink: 0 }} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <a href="#"
+                  className="group flex items-center justify-between px-5 py-4 text-[10px] tracking-[0.18em] uppercase transition-all duration-200"
+                  style={{ background: p.featured ? C.ivory : "transparent", color: p.featured ? C.ink : C.muted, border: p.featured ? "none" : `1px solid ${C.border}`, fontFamily: "var(--font-dm-sans)" }}
+                  onMouseEnter={e => { if (!p.featured) { (e.currentTarget as HTMLElement).style.background = C.cream; (e.currentTarget as HTMLElement).style.color = C.ink; } else { (e.currentTarget as HTMLElement).style.background = C.cream; } }}
+                  onMouseLeave={e => { if (!p.featured) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = C.muted; } else { (e.currentTarget as HTMLElement).style.background = C.ivory; } }}>
+                  {p.cta}
+                  <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 13, height: 13 }} />
+                </a>
+              </motion.div>
+            ))}
+          </div>
+          <motion.p className="mt-8 text-center text-[12px]" style={{ color: C.subtle }}
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeIn} custom={0.4}>
+            All plans include a 14-day free trial. No credit card required.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          FAQ
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-32 md:py-40" style={{ background: C.cream }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+            <motion.div className="lg:col-span-4"
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label>Questions</Label>
+              <Heading size="lg" className="mb-6">Common Queries</Heading>
+              <p className="text-[14px] leading-[1.85]" style={{ color: C.muted }}>
+                Can&apos;t find what you need? Reach us at{" "}
+                <a href="mailto:support@planmycanvas.io" style={{ color: C.ink, textDecoration: "underline" }}>
+                  support@planmycanvas.io
+                </a>
+              </p>
+            </motion.div>
+            <div className="lg:col-span-8 border-t" style={{ borderColor: C.border }}>
+              {FAQS.map((f, i) => (
+                <FaqItem key={i} {...f} idx={i} open={faqOpen === i} onToggle={() => setFaqOpen(faqOpen === i ? null : i)} />
               ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Outclass CTA Section */}
-        <section className="py-40">
-          <div className="container mx-auto px-4 md:px-8">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              className="bg-primary rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden group"
-            >
-              <div className="relative z-10">
-                <h2 className="text-5xl md:text-9xl font-black text-primary-foreground tracking-tighter leading-[0.8] italic uppercase mb-12">
-                  THE FUTURE <br />
-                  <span className="text-black not-italic opacity-80">IS YOURS.</span>
-                </h2>
-                <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12">
-                   <Button size="lg" variant="secondary" className="h-20 px-16 rounded-[2rem] text-xl font-black uppercase tracking-widest bg-white text-black hover:scale-105 transition-transform">
-                      Get Started Now
-                   </Button>
-                   <div className="text-primary-foreground/60 text-sm font-medium tracking-widest flex items-center gap-2">
-                      <Globe className="h-4 w-4" /> NO CREDIT CARD REQUIRED
-                   </div>
+      {/* ════════════════════════════════════════════════════════════════════
+          CONTACT
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-32 md:py-40" style={{ background: C.dark }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+            {/* Left */}
+            <motion.div className="lg:col-span-5"
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vFadeUp} custom={0}>
+              <Label light>Get Started</Label>
+              <Heading size="lg" light className="mb-8">
+                Ready to Command Your Socials?
+              </Heading>
+              <p className="text-[15px] leading-[1.85] mb-12" style={{ color: `${C.ivory}45` }}>
+                Tell us about your team and we&apos;ll get you set up in minutes. No credit card, no commitment — just a better way to work.
+              </p>
+              <div className="space-y-6">
+                {[["Email", "support@planmycanvas.io"], ["Response", "Within 2 hours"], ["Trial", "14 days free"]].map(([k, v]) => (
+                  <div key={k} className="flex items-center gap-4">
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.bronze }} />
+                    <span className="text-[10px] tracking-[0.2em] uppercase mr-2" style={{ color: `${C.ivory}35`, fontFamily: "var(--font-dm-sans)" }}>{k}</span>
+                    <span className="text-[13px]" style={{ color: `${C.ivory}55` }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right: Form */}
+            <motion.div className="lg:col-span-7"
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={vSlideRight} custom={0.15}>
+              {formSent ? (
+                <div className="py-20 text-center">
+                  <p className="text-[44px] font-extrabold mb-4"
+                    style={{ color: C.ivory, fontFamily: "var(--font-display)" }}>Thank you.</p>
+                  <p className="text-[14px]" style={{ color: `${C.ivory}45` }}>We&apos;ll be in touch within 2 hours.</p>
                 </div>
-              </div>
-
-              {/* Massive Decorative SVG Pattern */}
-              <div className="absolute inset-0 pointer-events-none opacity-10 flex items-center justify-center">
-                 <motion.svg
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
-                  viewBox="0 0 100 100" className="w-[150%] h-[150%]"
-                 >
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.1" strokeDasharray="1 2" />
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="0.1" strokeDasharray="2 1" />
-                    <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" strokeWidth="0.1" />
-                 </motion.svg>
-              </div>
-              <div className="absolute inset-0 bg-linear-to-tr from-black/20 to-transparent pointer-events-none"></div>
+              ) : (
+                <form onSubmit={handleFormSubmit} className="space-y-0">
+                  {[
+                    { label: "Your Name", key: "name", type: "text", placeholder: "Full name" },
+                    { label: "Email Address", key: "email", type: "email", placeholder: "you@company.com" },
+                    { label: "Company", key: "company", type: "text", placeholder: "Company or agency name" },
+                    { label: "How can we help?", key: "message", type: "textarea", placeholder: "Tell us about your team and what you need..." },
+                  ].map(({ label, key, type, placeholder }) => (
+                    <div key={key} className="border-b py-5" style={{ borderColor: C.darkBdr }}>
+                      <label className="block text-[9px] tracking-[0.25em] uppercase mb-3"
+                        style={{ color: `${C.ivory}35`, fontFamily: "var(--font-dm-sans)" }}>{label}</label>
+                      {type === "textarea" ? (
+                        <textarea
+                          required
+                          rows={4}
+                          placeholder={placeholder}
+                          value={form[key as keyof typeof form]}
+                          onChange={e => setForm(prev => ({ ...prev, [key]: e.target.value }))}
+                          className="w-full bg-transparent text-[15px] outline-none resize-none placeholder:opacity-25"
+                          style={{ color: C.ivory, fontFamily: "var(--font-dm-sans)" }} />
+                      ) : (
+                        <input
+                          type={type}
+                          required
+                          placeholder={placeholder}
+                          value={form[key as keyof typeof form]}
+                          onChange={e => setForm(prev => ({ ...prev, [key]: e.target.value }))}
+                          className="w-full bg-transparent text-[15px] outline-none placeholder:opacity-25"
+                          style={{ color: C.ivory, fontFamily: "var(--font-dm-sans)" }} />
+                      )}
+                    </div>
+                  ))}
+                  <div className="pt-8">
+                    <button type="submit"
+                      className="group inline-flex items-center gap-4 px-8 py-5 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                      style={{ background: C.ivory, color: C.dark, fontFamily: "var(--font-dm-sans)" }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.cream; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ivory; }}>
+                      Send Message
+                      <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
+                    </button>
+                  </div>
+                </form>
+              )}
             </motion.div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <Footer />
+      {/* ════════════════════════════════════════════════════════════════════
+          FINAL CTA
+      ════════════════════════════════════════════════════════════════════ */}
+      <section className="py-40 md:py-56 border-t" style={{ background: C.ivory, borderColor: C.border }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <motion.div className="max-w-4xl"
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={vFadeUp} custom={0}>
+            <Label>Begin Today</Label>
+            <Heading size="xl" className="mb-10">
+              Your Social Presence,<br />
+              <span style={{ color: C.bronze }}>Perfectly Orchestrated.</span>
+            </Heading>
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
+              <a href="#pricing"
+                className="group inline-flex items-center gap-3 px-9 py-5 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                style={{ background: C.ink, color: C.ivory, fontFamily: "var(--font-dm-sans)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = C.darkMid; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = C.ink; }}>
+                Start 14-Day Free Trial
+                <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" style={{ width: 14, height: 14 }} />
+              </a>
+              <a href="mailto:support@planmycanvas.io"
+                className="group inline-flex items-center gap-3 px-9 py-5 text-[10px] tracking-[0.22em] uppercase transition-colors duration-200"
+                style={{ color: C.muted, border: `1px solid ${C.border}`, fontFamily: "var(--font-dm-sans)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.ink; (e.currentTarget as HTMLElement).style.borderColor = C.ink; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = C.muted; (e.currentTarget as HTMLElement).style.borderColor = C.border; }}>
+                Talk to the Team
+              </a>
+            </div>
+            <p className="mt-8 text-[12px]" style={{ color: C.subtle, fontFamily: "var(--font-dm-sans)" }}>
+              No credit card required · Cancel anytime · Setup in under 5 minutes
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════
+          FOOTER
+      ════════════════════════════════════════════════════════════════════ */}
+      <footer className="py-20 border-t" style={{ background: C.dark, borderColor: C.darkBdr }}>
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+            {/* Brand */}
+            <div className="md:col-span-4">
+              <p className="text-[13px] font-medium tracking-[0.15em] uppercase mb-5"
+                style={{ color: C.ivory, fontFamily: "var(--font-dm-sans)" }}>Plan My Canvas</p>
+              <p className="text-[13px] leading-[1.85] max-w-xs mb-8"
+                style={{ color: `${C.ivory}40` }}>
+                All accounts. One Canvas. The unified social media workspace for teams who demand precision, speed, and clarity.
+              </p>
+              <div className="flex items-center gap-5">
+                {[
+                  { label: "X", href: "https://x.com", icon: <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg> },
+                  { label: "LinkedIn", href: "https://linkedin.com", icon: <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" /></svg> },
+                  { label: "Instagram", href: "https://instagram.com", icon: <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg> },
+                ].map(s => (
+                  <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label}
+                    className="transition-colors duration-200" style={{ color: `${C.ivory}35` }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.ivory; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}35`; }}>
+                    {s.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Product */}
+            <div className="md:col-span-2">
+              <p className="text-[9px] tracking-[0.25em] uppercase mb-6"
+                style={{ color: `${C.ivory}30`, fontFamily: "var(--font-dm-sans)" }}>Product</p>
+              <ul className="space-y-3">
+                {[["Features", "#features"], ["Platform", "#platform"], ["Pricing", "#pricing"], ["Stories", "#stories"]].map(([l, h]) => (
+                  <li key={l}>
+                    <a href={h} className="text-[13px] transition-colors duration-200"
+                      style={{ color: `${C.ivory}40` }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.ivory; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}40`; }}>{l}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div className="md:col-span-2">
+              <p className="text-[9px] tracking-[0.25em] uppercase mb-6"
+                style={{ color: `${C.ivory}30`, fontFamily: "var(--font-dm-sans)" }}>Company</p>
+              <ul className="space-y-3">
+                {["About Us", "Press Kit", "Privacy Policy", "Terms of Service"].map(l => (
+                  <li key={l}>
+                    <a href="#" className="text-[13px] transition-colors duration-200"
+                      style={{ color: `${C.ivory}40` }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.ivory; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = `${C.ivory}40`; }}>{l}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Newsletter */}
+            <div className="md:col-span-4">
+              <p className="text-[9px] tracking-[0.25em] uppercase mb-6"
+                style={{ color: `${C.ivory}30`, fontFamily: "var(--font-dm-sans)" }}>Stay Informed</p>
+              <p className="text-[13px] leading-[1.8] mb-5" style={{ color: `${C.ivory}40` }}>
+                Bi-weekly updates on new channels, AI features, and platform releases.
+              </p>
+              {subscribed ? (
+                <div className="flex items-center gap-2 text-[12px] py-3" style={{ color: `${C.ivory}50` }}>
+                  <Check style={{ width: 13, height: 13 }} />
+                  Thank you for subscribing.
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className="flex">
+                  <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className="flex-1 px-4 py-3 text-[12px] bg-transparent outline-none placeholder:opacity-20"
+                    style={{ border: `1px solid ${C.ivory}15`, borderRight: "none", color: C.ivory, fontFamily: "var(--font-dm-sans)" }} />
+                  <button type="submit"
+                    className="px-4 py-3 transition-colors duration-200 flex items-center"
+                    style={{ background: `${C.ivory}10`, border: `1px solid ${C.ivory}15`, color: `${C.ivory}50` }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = `${C.ivory}20`; (e.currentTarget as HTMLElement).style.color = C.ivory; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = `${C.ivory}10`; (e.currentTarget as HTMLElement).style.color = `${C.ivory}50`; }}>
+                    <ArrowUpRight style={{ width: 14, height: 14 }} />
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-8 border-t"
+            style={{ borderColor: C.darkBdr }}>
+            <p className="text-[11px]" style={{ color: `${C.ivory}20`, fontFamily: "var(--font-dm-sans)" }}>
+              © {new Date().getFullYear()} Plan My Canvas, Inc. All rights reserved.
+            </p>
+            <div className="flex items-center gap-7">
+              {["Security Audited", "System Status: Operational"].map(item => (
+                <span key={item} className="text-[11px]"
+                  style={{ color: `${C.ivory}20`, fontFamily: "var(--font-dm-sans)" }}>{item}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

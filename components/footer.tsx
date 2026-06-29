@@ -19,7 +19,7 @@ export function Footer() {
               <div className="h-12 w-12 bg-primary rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-12 shadow-xl shadow-primary/20">
                 <Share2 className="h-7 w-7 text-primary-foreground" />
               </div>
-              <span className="text-3xl font-black tracking-tighter italic uppercase">SocialDesk</span>
+              <span className="text-3xl font-black tracking-tighter italic uppercase">Plan My Canvas</span>
             </Link>
             <p className="text-muted-foreground text-lg leading-relaxed max-w-sm">
               The ultimate command center for modern digital architects. Dominate the digital landscape with precision and speed.
@@ -85,7 +85,7 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-          <p>© {new Date().getFullYear()} SocialDesk Command Systems</p>
+          <p>© {new Date().getFullYear()} Plan My Canvas</p>
           <div className="flex gap-8">
             <Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link>
             <Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link>
