@@ -5,8 +5,6 @@ import { Footer } from "@/components/footer";
 import { DashboardPreview } from "@/components/dashboard-preview";
 import { motion } from "framer-motion";
 import {
-  BarChart3,
-  Users,
   CheckCircle2,
   Globe,
   Sparkles,
@@ -14,7 +12,10 @@ import {
   Play,
   TrendingUp,
   MessageSquare,
-  Clock,
+  LayoutGrid,
+  Users,
+  Zap,
+  Inbox,
 } from "lucide-react";
 import React from "react";
 
@@ -159,7 +160,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Features — Premium Bento Grid ───────────────────────────────── */}
+        {/* ── Features — 6-card grid ──────────────────────────────────────── */}
         <section id="features" className="py-32">
           <div className="container mx-auto px-4 md:px-8">
             <SectionHeader
@@ -168,121 +169,55 @@ export default function Home() {
               subtitle="A complete toolkit for modern social media — from AI-powered content creation to real-time analytics and seamless collaboration."
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-              {/* Large — AI Engine */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -3 }}
-                transition={{ duration: 0.4 }}
-                className="md:col-span-7 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)] overflow-hidden relative group"
-              >
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative">
-                  <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
-                    <Sparkles className="h-5 w-5 text-primary" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
+              {[
+                {
+                  icon: Sparkles,
+                  title: "On-Brand AI Writing",
+                  desc: "Train AI once with your brand voice, tone, audience, and products. Every caption, hashtag, and campaign stays consistent—without rewriting prompts every time.",
+                },
+                {
+                  icon: LayoutGrid,
+                  title: "All Platforms, One Workspace",
+                  desc: "Plan, publish, reply, and analyze Instagram, Facebook, LinkedIn, X, TikTok, Threads, and YouTube from one beautifully organized dashboard.",
+                },
+                {
+                  icon: TrendingUp,
+                  title: "Analytics That Guide You",
+                  desc: "Don't just see numbers. Get AI-powered insights explaining what worked, what failed, and exactly how to improve your next campaign.",
+                },
+                {
+                  icon: Users,
+                  title: "Effortless Team Collaboration",
+                  desc: "Assign tasks, leave comments, approve posts, manage client workspaces, and control permissions—all in one place.",
+                },
+                {
+                  icon: Zap,
+                  title: "Automation That Saves Hours",
+                  desc: "Generate content, schedule weeks ahead, recycle evergreen posts, auto-publish, receive reminders, and let AI optimize posting times automatically.",
+                },
+                {
+                  icon: Inbox,
+                  title: "Unified Inbox",
+                  desc: "Reply to every message from one place. Manage comments, DMs, and mentions across all connected accounts without switching apps.",
+                },
+              ].map((feature, idx) => (
+                <motion.div
+                  key={feature.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.06, duration: 0.4 }}
+                  whileHover={{ y: -4 }}
+                  className="bg-card border border-foreground/85 rounded-2xl p-7 text-center transition-colors duration-[250ms] hover:border-primary"
+                >
+                  <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center mb-6 mx-auto">
+                    <feature.icon className="h-6 w-6 text-primary" strokeWidth={1.75} />
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-3">AI Content Engine</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-                    Our AI understands your brand voice and generates captions, hashtags, and post ideas — optimized for your audience and ideal posting times.
-                  </p>
-                  <div className="mt-8 flex items-center gap-4">
-                    <div className="flex -space-x-2">
-                      {[...Array(4)].map((_, i) => (
-                        <div key={i} className="h-7 w-7 rounded-full border-2 border-card bg-accent" />
-                      ))}
-                    </div>
-                    <span className="text-xs text-muted-foreground">Trusted by 12,000+ creators</span>
-                  </div>
-                </div>
-                {/* Decorative ring */}
-                <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full border border-primary/8" />
-                <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full border border-primary/6" />
-              </motion.div>
-
-              {/* Small — Analytics */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.08, duration: 0.4 }}
-                whileHover={{ y: -3 }}
-                className="md:col-span-5 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)] group"
-              >
-                <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
-                  <BarChart3 className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">Real-time Analytics</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                  Live engagement metrics that update as your audience reacts to your content.
-                </p>
-                {/* Mini bar chart */}
-                <div className="flex items-end gap-1 h-14">
-                  {[40, 58, 44, 72, 53, 84, 68, 90, 62, 78, 95, 72].map((h, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 rounded-sm transition-all duration-300"
-                      style={{
-                        height: `${h}%`,
-                        background: i === 10 ? "oklch(0.47 0.1 128)" : "oklch(0.47 0.1 128 / 0.22)",
-                      }}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Small — Scheduling */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.12, duration: 0.4 }}
-                whileHover={{ y: -3 }}
-                className="md:col-span-4 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)]"
-              >
-                <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
-                  <Clock className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">Smart Scheduling</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Auto-detect optimal posting times across all timezones for maximum reach and engagement.
-                </p>
-              </motion.div>
-
-              {/* Large — Collaboration */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.18, duration: 0.4 }}
-                whileHover={{ y: -3 }}
-                className="md:col-span-8 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)] overflow-hidden"
-              >
-                <div className="flex flex-col md:flex-row gap-8 items-start h-full">
-                  <div className="flex-1">
-                    <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
-                      <Users className="h-5 w-5 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-3">Team Collaboration</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Streamlined approval workflows for agencies and teams. Clients review and approve with a single click.
-                    </p>
-                  </div>
-                  <div className="flex-1 w-full flex flex-col gap-2.5 self-center">
-                    {[
-                      { label: "Campaign Draft #12", status: "Pending", cls: "text-amber-700 bg-amber-50 border-amber-200" },
-                      { label: "Summer Campaign", status: "Approved", cls: "text-emerald-700 bg-emerald-50 border-emerald-200" },
-                      { label: "Q3 Content Plan", status: "Ready", cls: "text-primary bg-primary/8 border-primary/20" },
-                    ].map((item, i) => (
-                      <div key={i} className={`flex items-center justify-between px-4 py-3 rounded-[10px] bg-background border border-border ${i === 1 ? "translate-x-3" : i === 2 ? "translate-x-6" : ""}`}>
-                        <span className="text-sm font-medium text-foreground">{item.label}</span>
-                        <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${item.cls}`}>{item.status}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2.5">{feature.title}</h3>
+                  <p className="text-muted-foreground text-[15px] leading-[1.6]">{feature.desc}</p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
