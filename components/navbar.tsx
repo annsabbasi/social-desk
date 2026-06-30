@@ -12,12 +12,12 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-5 pointer-events-none"
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-5 pointer-events-none backdrop-blur-xl [mask-image:linear-gradient(to_bottom,black,black_70%,transparent)]"
     >
       <div className="w-full max-w-7xl pointer-events-auto flex flex-col items-center">
         <div
           className="w-full relative flex items-center justify-between px-5 h-[52px] backdrop-blur-xl border border-border/70 rounded-[10px] shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
-          style={{ backgroundColor: "#ffffff" }}
+          style={{ backgroundColor: "#f0f2f0" }}
         >
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center justify-center" aria-label="Go to homepage">

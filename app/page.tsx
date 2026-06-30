@@ -11,6 +11,7 @@ import {
   Globe,
   Sparkles,
   ArrowRight,
+  Play,
   TrendingUp,
   MessageSquare,
   Clock,
@@ -89,7 +90,7 @@ export default function Home() {
               >
                 All Accounts,
                 <br />
-                <span className="text-primary">One Canvas.</span>
+                <span className="text-primary not-italic">One Canvas.</span>
               </motion.h1>
 
               {/* Subtitle */}
@@ -113,7 +114,11 @@ export default function Home() {
                   Start Free Trial
                   <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
-                <button className="h-12 px-7 text-[13px] font-medium rounded-[10px] border border-border bg-card text-foreground hover:bg-muted/60 transition-colors">
+                <button
+                  aria-label="Watch demo video"
+                  className="group h-12 px-7 text-[13px] font-medium rounded-[10px] border border-border bg-card text-foreground flex items-center gap-2.5 hover:bg-muted/60 transition-colors duration-200"
+                >
+                  <Play className="h-4 w-4 fill-current transition-transform duration-200 group-hover:scale-110" />
                   Watch Demo
                 </button>
               </motion.div>
@@ -126,11 +131,8 @@ export default function Home() {
         </section>
 
         {/* ── Platform Marquee ─────────────────────────────────────────────── */}
-        <section className="py-14 bg-accent border-y border-border overflow-hidden">
-          <p className="text-center text-xs font-semibold tracking-widest uppercase mb-6" style={{ color: "#181B13" }}>
-            Publish to every platform
-          </p>
-          <div className="flex gap-12 whitespace-nowrap overflow-hidden">
+        <section className="py-8 border-y border-border overflow-hidden flex items-center" style={{ backgroundColor: "#9ab374" }}>
+          <div className="flex gap-12 whitespace-nowrap overflow-hidden w-full">
             <motion.div
               animate={{ x: [0, -1100] }}
               transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
@@ -294,9 +296,9 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
-                  className="inline-flex items-center gap-1.5 text-primary font-semibold tracking-wider text-[11px] uppercase mb-6 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15"
+                  className="inline-flex items-center gap-1.5 text-primary-foreground font-semibold tracking-wider text-[11px] uppercase mb-6 px-4 py-1.5 rounded-full bg-primary border border-primary"
                 >
-                  <span className="w-1 h-1 rounded-full bg-primary" />
+                  <span className="w-1 h-1 rounded-full bg-primary-foreground" />
                   How it works
                 </motion.span>
                 <motion.h2

@@ -65,7 +65,7 @@ function StatusBadge({ status }: { status:string }) {
     Ready:      "bg-[#EEF3EA] text-[#4A6325] border-[#C4D3AE]",
   };
   return (
-    <span className={`text-[9px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap ${map[status] ?? map.Draft}`}>
+    <span className={`text-[9px] font-semibold px-2 py-0.5 rounded-[10px] border whitespace-nowrap ${map[status] ?? map.Draft}`}>
       {status}
     </span>
   );
@@ -185,7 +185,7 @@ function DayView({ date }:{ date:Date }) {
           <div className="text-[10px]" style={{ color:FAINT }}>{MONTHS[date.getMonth()]} {date.getFullYear()}</div>
         </div>
         {posts.length > 0 && (
-          <span className="ml-auto text-[10px] font-semibold text-white px-2.5 py-1 rounded-full" style={{ background:OLIVE }}>
+          <span className="ml-auto text-[10px] font-semibold text-white px-2.5 py-1 rounded-[10px]" style={{ background:OLIVE }}>
             {posts.length} post{posts.length>1?"s":""}
           </span>
         )}
@@ -203,7 +203,7 @@ function DayView({ date }:{ date:Date }) {
             </div>
             <div className="flex-1 min-h-[52px] p-2">
               {slotPosts.map((p,pi) => (
-                <div key={pi} className="flex items-center gap-2 px-3 py-2 rounded-xl mb-1 text-white cursor-default shadow-sm" style={{ background:p.color }}>
+                <div key={pi} className="flex items-center gap-2 px-3 py-2 rounded-[10px] mb-1 text-white cursor-default shadow-sm" style={{ background:p.color }}>
                   <div className="flex-1 min-w-0">
                     <div className="text-[11px] font-semibold truncate">{p.text}</div>
                     <div className="text-[9px] opacity-75">{p.platform} · {p.time}</div>
@@ -236,12 +236,12 @@ function ActivityTab() {
     <div className="p-4" style={{ background:PANEL }}>
       <div className="flex items-center gap-2 mb-4 flex-wrap">
         <input
-          className="flex-1 min-w-[120px] text-[11px] px-3 py-2 rounded-xl border outline-none transition-colors"
+          className="flex-1 min-w-[120px] text-[11px] px-3 py-2 rounded-[10px] border outline-none transition-colors"
           placeholder="Search activity…"
           style={{ background:"white", borderColor:BORDER, color:INK }}
         />
         {["All","Published","Draft","Scheduled","Failed"].map((f,i) => (
-          <span key={f} className="text-[10px] font-semibold px-3 py-1.5 rounded-lg cursor-default border transition-colors"
+          <span key={f} className="text-[10px] font-semibold px-3 py-1.5 rounded-[10px] cursor-default border transition-colors"
             style={i===0
               ? { background:OLIVE, color:"white", borderColor:OLIVE }
               : { background:"white", color:MUTED, borderColor:BORDER }}>
@@ -251,7 +251,7 @@ function ActivityTab() {
       </div>
       <div className="flex flex-col gap-2">
         {activities.map((a,i) => (
-          <div key={i} className="flex items-center gap-3 bg-white border rounded-2xl px-4 py-3 cursor-default transition-all hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)]" style={{ borderColor:BORDER }}>
+          <div key={i} className="flex items-center gap-3 bg-white border rounded-[10px] px-4 py-3 cursor-default transition-all hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)]" style={{ borderColor:BORDER }}>
             <span className="text-base shrink-0">{a.icon}</span>
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-semibold truncate" style={{ color:INK }}>{a.text}</p>
@@ -285,18 +285,18 @@ function ContentTab() {
   return (
     <div className="p-4" style={{ background:PANEL }}>
       <div className="flex items-center gap-2 mb-4 flex-wrap">
-        <input className="text-[11px] px-3 py-2 rounded-xl border outline-none w-44" placeholder="Search content…"
+        <input className="text-[11px] px-3 py-2 rounded-[10px] border outline-none w-44" placeholder="Search content…"
           style={{ background:"white", borderColor:BORDER, color:INK }} />
         <div className="flex gap-1 flex-wrap flex-1">
           {filters.map(f => (
             <button key={f} onClick={() => setFilter(f)}
-              className="text-[10px] font-semibold px-3 py-1.5 rounded-lg border transition-colors"
+              className="text-[10px] font-semibold px-3 py-1.5 rounded-[10px] border transition-colors"
               style={filter===f ? { background:OLIVE, color:"white", borderColor:OLIVE } : { background:"white", color:MUTED, borderColor:BORDER }}>
               {f}
             </button>
           ))}
         </div>
-        <div className="flex border rounded-xl overflow-hidden bg-white" style={{ borderColor:BORDER }}>
+        <div className="flex border rounded-[10px] overflow-hidden bg-white" style={{ borderColor:BORDER }}>
           {(["Grid","List"] as const).map(v => (
             <button key={v} onClick={() => setView(v)}
               className="text-[10px] font-semibold px-3 py-1.5 transition-colors"
@@ -309,20 +309,20 @@ function ContentTab() {
       {view==="Grid" ? (
         <div className="grid grid-cols-3 gap-3">
           {filtered.map((item,i) => (
-            <div key={i} className="rounded-2xl border bg-white p-4 cursor-default group transition-all hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)]" style={{ borderColor:BORDER }}>
+            <div key={i} className="rounded-[10px] border bg-white p-4 cursor-default group transition-all hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)]" style={{ borderColor:BORDER }}>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full text-white" style={{ background:item.color }}>{item.platform}</span>
+                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-[10px] text-white" style={{ background:item.color }}>{item.platform}</span>
                 <StatusBadge status={item.status} />
               </div>
-              <div className="h-14 rounded-xl mb-3 flex items-center justify-center text-xl" style={{ background:`${item.color}12` }}>
+              <div className="h-14 rounded-[10px] mb-3 flex items-center justify-center text-xl" style={{ background:`${item.color}12` }}>
                 {typeEmoji[item.type] ?? "📝"}
               </div>
               <p className="text-[11px] font-semibold mb-1.5 leading-snug" style={{ color:INK }}>{item.title}</p>
               <span className="text-[9px]" style={{ color:FAINT }}>{item.type}</span>
               <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="text-[9px] px-2 py-1 rounded-lg font-medium" style={{ background:PANEL, color:INK_MED }}>Edit</button>
-                <button className="text-[9px] px-2 py-1 rounded-lg font-medium" style={{ background:PANEL, color:INK_MED }}>Preview</button>
-                <button className="text-[9px] px-2 py-1 rounded-lg font-medium" style={{ background:"#FEF0F0", color:"#8A3535" }}>Delete</button>
+                <button className="text-[9px] px-2 py-1 rounded-[10px] font-medium" style={{ background:PANEL, color:INK_MED }}>Edit</button>
+                <button className="text-[9px] px-2 py-1 rounded-[10px] font-medium" style={{ background:PANEL, color:INK_MED }}>Preview</button>
+                <button className="text-[9px] px-2 py-1 rounded-[10px] font-medium" style={{ background:"#FEF0F0", color:"#8A3535" }}>Delete</button>
               </div>
             </div>
           ))}
@@ -330,8 +330,8 @@ function ContentTab() {
       ) : (
         <div className="flex flex-col gap-2">
           {filtered.map((item,i) => (
-            <div key={i} className="flex items-center gap-3 bg-white border rounded-2xl px-4 py-3 cursor-default group transition-all hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0" style={{ background:`${item.color}12` }}>
+            <div key={i} className="flex items-center gap-3 bg-white border rounded-[10px] px-4 py-3 cursor-default group transition-all hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
+              <div className="w-8 h-8 rounded-[10px] flex items-center justify-center text-base shrink-0" style={{ background:`${item.color}12` }}>
                 {typeEmoji[item.type] ?? "📝"}
               </div>
               <div className="flex-1 min-w-0">
@@ -340,8 +340,8 @@ function ContentTab() {
               </div>
               <StatusBadge status={item.status} />
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="text-[9px] px-2 py-1 rounded-lg font-medium" style={{ background:PANEL, color:INK_MED }}>Edit</button>
-                <button className="text-[9px] px-2 py-1 rounded-lg font-medium" style={{ background:"#FEF0F0", color:"#8A3535" }}>Delete</button>
+                <button className="text-[9px] px-2 py-1 rounded-[10px] font-medium" style={{ background:PANEL, color:INK_MED }}>Edit</button>
+                <button className="text-[9px] px-2 py-1 rounded-[10px] font-medium" style={{ background:"#FEF0F0", color:"#8A3535" }}>Delete</button>
               </div>
             </div>
           ))}
@@ -370,7 +370,7 @@ function ReportsSchedulingTab() {
           { label:"Avg. Engagement",  value:"5.4%",delta:"+1.2%",up:true  },
           { label:"Failed Posts",     value:"3",   delta:"-40%", up:true  },
         ].map((s,i) => (
-          <div key={i} className="rounded-2xl border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
+          <div key={i} className="rounded-[10px] border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
             <p className="text-[9px] font-semibold uppercase tracking-wider mb-1.5" style={{ color:FAINT }}>{s.label}</p>
             <p className="text-[22px] font-bold leading-none" style={{ color:INK }}>{s.value}</p>
             <p className="text-[10px] font-semibold mt-1.5" style={{ color:s.up?"#4A8A64":"#8A3535" }}>▲ {s.delta} this month</p>
@@ -378,10 +378,10 @@ function ReportsSchedulingTab() {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <div className="col-span-2 rounded-2xl border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
+        <div className="col-span-2 rounded-[10px] border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
           <div className="flex items-center justify-between mb-3">
             <p className="text-[12px] font-semibold" style={{ color:INK }}>Posts Published per Month</p>
-            <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full text-white" style={{ background:OLIVE }}>2026</span>
+            <span className="text-[9px] font-semibold px-2 py-0.5 rounded-[10px] text-white" style={{ background:OLIVE }}>2026</span>
           </div>
           <div className="flex items-end gap-1.5 h-24">
             {bars.map((h,i) => (
@@ -392,7 +392,7 @@ function ReportsSchedulingTab() {
             ))}
           </div>
         </div>
-        <div className="rounded-2xl border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
+        <div className="rounded-[10px] border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
           <p className="text-[12px] font-semibold mb-3" style={{ color:INK }}>Platform Breakdown</p>
           {platforms.map((p,i) => (
             <div key={i} className="mb-3.5">
@@ -431,20 +431,20 @@ function ProfilesTab() {
         <p className="text-[12px] font-semibold" style={{ color:INK_MED }}>
           {profiles.filter(p=>p.status==="Connected").length} of {profiles.length} profiles connected
         </p>
-        <button className="text-[11px] font-semibold text-white px-4 py-2 rounded-xl shadow-sm" style={{ background:OLIVE }}>
+        <button className="text-[11px] font-semibold text-white px-4 py-2 rounded-[10px] shadow-sm" style={{ background:OLIVE }}>
           + Add Profile
         </button>
       </div>
       <div className="flex flex-col gap-2.5">
         {profiles.map((p,i) => (
-          <div key={i} className="flex items-center gap-4 bg-white border rounded-2xl px-5 py-4 transition-all hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 text-white" style={{ background:p.color }}>
+          <div key={i} className="flex items-center gap-4 bg-white border rounded-[10px] px-5 py-4 transition-all hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
+            <div className="w-10 h-10 rounded-[10px] flex items-center justify-center text-xl shrink-0 text-white" style={{ background:p.color }}>
               {p.icon}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-[12px] font-semibold" style={{ color:INK }}>{p.name}</p>
-                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full border"
+                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-[10px] border"
                   style={
                     p.status==="Connected" ? { background:"#E6F4ED",color:"#2D7A5A",borderColor:"#A4D5BC" } :
                     p.status==="Expired"   ? { background:"#FDF8EE",color:"#8A6425",borderColor:"#F0D898" } :
@@ -459,10 +459,10 @@ function ProfilesTab() {
               </p>
             </div>
             <div className="flex gap-2 shrink-0">
-              {p.status==="Connected"    && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-lg border" style={{ background:"white", color:MUTED, borderColor:BORDER }}>↻ Sync</button>}
-              {p.status==="Expired"      && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-lg text-white" style={{ background:OLIVE }}>Reconnect</button>}
-              {p.status==="Disconnected" && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-lg text-white" style={{ background:OLIVE }}>Connect</button>}
-              {p.status==="Connected"    && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-lg" style={{ background:"#FEF0F0", color:"#8A3535" }}>Disconnect</button>}
+              {p.status==="Connected"    && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-[10px] border" style={{ background:"white", color:MUTED, borderColor:BORDER }}>↻ Sync</button>}
+              {p.status==="Expired"      && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-[10px] text-white" style={{ background:OLIVE }}>Reconnect</button>}
+              {p.status==="Disconnected" && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-[10px] text-white" style={{ background:OLIVE }}>Connect</button>}
+              {p.status==="Connected"    && <button className="text-[10px] font-semibold px-3 py-1.5 rounded-[10px]" style={{ background:"#FEF0F0", color:"#8A3535" }}>Disconnect</button>}
             </div>
           </div>
         ))}
@@ -503,13 +503,13 @@ function SchedulingTab() {
         <div className="flex items-center gap-0.5">
           {INNER_TABS.map(tab => (
             <button key={tab} onClick={() => setInnerTab(tab)}
-              className="text-[11px] font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              className="text-[11px] font-semibold px-3 py-1.5 rounded-[10px] transition-colors"
               style={innerTab===tab ? { background:OLIVE, color:"white" } : { color:FAINT }}>
               {tab}
             </button>
           ))}
         </div>
-        <button className="text-white text-[11px] font-semibold px-4 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm cursor-default" style={{ background:OLIVE }}>
+        <button className="text-white text-[11px] font-semibold px-4 py-1.5 rounded-[10px] flex items-center gap-1.5 shadow-sm cursor-default" style={{ background:OLIVE }}>
           ✏️ Compose
         </button>
       </div>
@@ -519,21 +519,21 @@ function SchedulingTab() {
         <div className="shrink-0 flex items-center justify-between px-5 py-2.5 border-b" style={{ background:PANEL, borderColor:BORDER }}>
           <div className="flex items-center gap-1.5">
             {["Scheduled ▾","Queued ▾","Sent ▾","Overview ▾"].map(f => (
-              <span key={f} className="text-[10px] font-medium px-2.5 py-1 rounded-lg border cursor-default" style={{ background:"white", color:MUTED, borderColor:BORDER }}>
+              <span key={f} className="text-[10px] font-medium px-2.5 py-1 rounded-[10px] border cursor-default" style={{ background:"white", color:MUTED, borderColor:BORDER }}>
                 {f}
               </span>
             ))}
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <button onClick={prevPeriod} className="w-6 h-6 rounded-lg border flex items-center justify-center text-sm" style={{ background:"white", borderColor:BORDER, color:MUTED }}>‹</button>
+              <button onClick={prevPeriod} className="w-6 h-6 rounded-[10px] border flex items-center justify-center text-sm" style={{ background:"white", borderColor:BORDER, color:MUTED }}>‹</button>
               <span className="text-[12px] font-semibold min-w-[160px] text-center" style={{ color:INK }}>{periodLabel()}</span>
-              <button onClick={nextPeriod} className="w-6 h-6 rounded-lg border flex items-center justify-center text-sm" style={{ background:"white", borderColor:BORDER, color:MUTED }}>›</button>
+              <button onClick={nextPeriod} className="w-6 h-6 rounded-[10px] border flex items-center justify-center text-sm" style={{ background:"white", borderColor:BORDER, color:MUTED }}>›</button>
             </div>
-            <div className="flex items-center gap-0.5 border rounded-xl p-0.5 bg-white" style={{ borderColor:BORDER }}>
+            <div className="flex items-center gap-0.5 border rounded-[10px] p-0.5 bg-white" style={{ borderColor:BORDER }}>
               {(["Month","Week","Day"] as CalView[]).map(v => (
                 <button key={v} onClick={() => setCalView(v)}
-                  className="text-[10px] px-3 py-1 rounded-lg font-semibold transition-colors"
+                  className="text-[10px] px-3 py-1 rounded-[10px] font-semibold transition-colors"
                   style={calView===v ? { background:OLIVE, color:"white" } : { color:FAINT }}>
                   {v}
                 </button>
@@ -583,15 +583,15 @@ function PostIdeasTab() {
   return (
     <div className="p-5 grid grid-cols-3 gap-3 min-h-full content-start" style={{ background:PANEL }}>
       {ideas.map((idea,i) => (
-        <div key={i} className="rounded-2xl border bg-white p-4 cursor-default transition-all hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)]" style={{ borderColor:BORDER }}>
+        <div key={i} className="rounded-[10px] border bg-white p-4 cursor-default transition-all hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)]" style={{ borderColor:BORDER }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full text-white" style={{ background:idea.color }}>{idea.platform}</span>
+            <span className="text-[9px] font-semibold px-2 py-0.5 rounded-[10px] text-white" style={{ background:idea.color }}>{idea.platform}</span>
             <StatusBadge status={idea.status} />
           </div>
           <p className="text-[12px] font-semibold mb-2.5 leading-snug" style={{ color:INK }}>{idea.title}</p>
           <div className="flex gap-2">
-            <button className="text-[9px] px-2 py-1 rounded-lg font-medium" style={{ background:PANEL, color:MUTED }}>Edit</button>
-            <button className="text-[9px] px-2 py-1 rounded-lg font-semibold text-white" style={{ background:OLIVE }}>Schedule</button>
+            <button className="text-[9px] px-2 py-1 rounded-[10px] font-medium" style={{ background:PANEL, color:MUTED }}>Edit</button>
+            <button className="text-[9px] px-2 py-1 rounded-[10px] font-semibold text-white" style={{ background:OLIVE }}>Schedule</button>
           </div>
         </div>
       ))}
@@ -618,7 +618,7 @@ function CollaborationTab() {
         <p className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color:FAINT }}>Tasks</p>
         <div className="flex flex-col gap-2">
           {tasks.map((t,i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-2xl border bg-white cursor-default transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
+            <div key={i} className="flex items-center gap-3 p-3 rounded-[10px] border bg-white cursor-default transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
               <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
                 style={{ background:t.done?"#4A8A64":OLIVE }}>
                 {t.done?"✓":t.initials[0]}
@@ -635,7 +635,7 @@ function CollaborationTab() {
         <p className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color:FAINT }}>Recent Comments</p>
         <div className="flex flex-col gap-2">
           {comments.map((c,i) => (
-            <div key={i} className="p-3 rounded-2xl border bg-white cursor-default transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
+            <div key={i} className="p-3 rounded-[10px] border bg-white cursor-default transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.05)]" style={{ borderColor:BORDER }}>
               <div className="flex items-center gap-2 mb-1.5">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0" style={{ background:c.color }}>{c.initials}</div>
                 <span className="text-[11px] font-semibold" style={{ color:INK }}>{c.name}</span>
@@ -662,7 +662,7 @@ function ReportsTab() {
           { label:"Link Clicks",      value:"48.3K", delta:"+22%",  up:true  },
           { label:"Followers Gained", value:"1,840", delta:"-4%",   up:false },
         ].map((s,i) => (
-          <div key={i} className="rounded-2xl border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
+          <div key={i} className="rounded-[10px] border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
             <p className="text-[9px] font-semibold uppercase tracking-wider mb-1.5" style={{ color:FAINT }}>{s.label}</p>
             <p className="text-[22px] font-bold leading-none" style={{ color:INK }}>{s.value}</p>
             <p className="text-[10px] font-semibold mt-1.5" style={{ color:s.up?"#4A8A64":"#8A3535" }}>
@@ -671,10 +671,10 @@ function ReportsTab() {
           </div>
         ))}
       </div>
-      <div className="rounded-2xl border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
+      <div className="rounded-[10px] border bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" style={{ borderColor:BORDER }}>
         <div className="flex items-center justify-between mb-4">
           <p className="text-[12px] font-semibold" style={{ color:INK }}>Engagement Over Time</p>
-          <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full text-white" style={{ background:OLIVE }}>2026</span>
+          <span className="text-[9px] font-semibold px-2 py-0.5 rounded-[10px] text-white" style={{ background:OLIVE }}>2026</span>
         </div>
         <div className="flex items-end gap-1.5 h-28">
           {bars.map((h,i) => (
@@ -753,7 +753,7 @@ export function DashboardPreview() {
           style={{ background:PANEL, borderColor:BORDER }}>
           {OUTER_TABS.map(tab => (
             <button key={tab.label} onClick={() => setActiveTab(tab.label)}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap border transition-all duration-200"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-[10px] text-[11px] font-semibold whitespace-nowrap border transition-all duration-200"
               style={activeTab===tab.label
                 ? { background:OLIVE, color:"white", borderColor:OLIVE, boxShadow:"0 2px 8px rgba(0,0,0,0.12)" }
                 : { background:"white", color:MUTED, borderColor:BORDER }}>

@@ -28,7 +28,7 @@
   --color-muted: oklch(0.963 0.013 120);
   --color-muted-foreground: oklch(0.5 0.03 122);
   /* Section background */
-  --color-accent: oklch(0.815 0.041 122);
+  --color-accent: oklch(0.732 0.09 126.1);
   --color-accent-foreground: oklch(0.35 0.06 122);
   /* Soft danger red */
   --color-destructive: oklch(0.62 0.1 20);
@@ -55,7 +55,7 @@
   --color-sidebar-foreground: oklch(0.215 0.04 120);
   --color-sidebar-primary: oklch(0.47 0.1 128);
   --color-sidebar-primary-foreground: oklch(0.985 0.005 120);
-  --color-sidebar-accent: oklch(0.815 0.041 122);
+  --color-sidebar-accent: oklch(0.732 0.09 126.1);
   --color-sidebar-accent-foreground: oklch(0.47 0.1 128);
   --color-sidebar-border: oklch(0.895 0.028 122);
   --color-sidebar-ring: oklch(0.47 0.1 128 / 0.35);
@@ -74,7 +74,7 @@
   --secondary-foreground: oklch(0.215 0.04 120);
   --muted: oklch(0.963 0.013 120);
   --muted-foreground: oklch(0.5 0.03 122);
-  --accent: oklch(0.815 0.041 122);
+  --accent: oklch(0.732 0.09 126.1);
   --accent-foreground: oklch(0.35 0.06 122);
   --destructive: oklch(0.62 0.1 20);
   --border: oklch(0.895 0.028 122);
@@ -90,7 +90,7 @@
   --sidebar-foreground: oklch(0.215 0.04 120);
   --sidebar-primary: oklch(0.47 0.1 128);
   --sidebar-primary-foreground: oklch(0.985 0.005 120);
-  --sidebar-accent: oklch(0.815 0.041 122);
+  --sidebar-accent: oklch(0.732 0.09 126.1);
   --sidebar-accent-foreground: oklch(0.47 0.1 128);
   --sidebar-border: oklch(0.895 0.028 122);
   --sidebar-ring: oklch(0.47 0.1 128 / 0.35);
