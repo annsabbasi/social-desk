@@ -1,331 +1,283 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { DashboardPreview } from "@/components/dashboard-preview";
+import { motion } from "framer-motion";
 import {
-  Twitter,
-  Linkedin,
-  Instagram,
-  Facebook,
   BarChart3,
-  Calendar,
-  Zap,
   Users,
-  ArrowRight,
-  Layout,
   CheckCircle2,
-  PlayCircle,
-  MessageSquare,
-  Shield,
-  Star,
-  ChevronDown,
   Globe,
   Sparkles,
-  MousePointer2,
-  Rocket
+  ArrowRight,
+  TrendingUp,
+  MessageSquare,
+  Clock,
 } from "lucide-react";
 import React from "react";
 
-const SectionHeader = ({ title, subtitle, label }: { title: string, subtitle: string, label?: string }) => (
-  <div className="flex flex-col items-center text-center mb-20">
+// ─── Shared section header ────────────────────────────────────────────────────
+const SectionHeader = ({
+  title,
+  subtitle,
+  label,
+}: {
+  title: string;
+  subtitle: string;
+  label?: string;
+}) => (
+  <div className="flex flex-col items-center text-center mb-16">
     {label && (
       <motion.span
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         whileInView={{ opacity: 1, y: 0 }}
-        className="text-primary font-bold tracking-widest text-xs uppercase mb-4 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10"
+        viewport={{ once: true }}
+        className="inline-flex items-center gap-1.5 text-primary font-semibold tracking-wider text-[11px] uppercase mb-5 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15"
       >
+        <span className="w-1 h-1 rounded-full bg-primary" />
         {label}
       </motion.span>
     )}
     <motion.h2
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
-      className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-linear-to-b from-foreground to-foreground/70 bg-clip-text text-transparent"
+      viewport={{ once: true }}
+      transition={{ delay: 0.08 }}
+      className="text-3xl md:text-[2.75rem] font-semibold tracking-tight text-foreground mb-4 leading-[1.15] max-w-2xl"
     >
       {title}
     </motion.h2>
     <motion.p
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="text-muted-foreground text-lg max-w-2xl"
+      viewport={{ once: true }}
+      transition={{ delay: 0.16 }}
+      className="text-muted-foreground text-base leading-relaxed max-w-xl"
     >
       {subtitle}
     </motion.p>
   </div>
 );
 
-export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
+export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-background selection:bg-primary/30 selection:text-primary-foreground overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
-      <main className="flex-grow relative">
-        {/* Abstract Background Shapes */}
-        <div className="absolute top-0 left-0 w-full h-[120vh] pointer-events-none -z-10 overflow-hidden">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 90, 0],
-              x: [0, 100, 0]
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-primary/5 rounded-full blur-[120px]"
-          />
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              rotate: [0, -45, 0],
-              x: [0, -50, 0]
-            }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute top-[20%] -right-[5%] w-[40%] h-[50%] bg-primary/10 rounded-full blur-[100px]"
-          />
-        </div>
+      <main className="flex-grow">
 
-        {/* Hero Section */}
-        <section className="relative pt-32 pb-20 md:pt-48 md:pb-40 overflow-hidden">
+        {/* ── Hero ─────────────────────────────────────────────────────────── */}
+        <section className="relative pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden">
+          {/* Subtle ambient background */}
+          <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
+            <div className="absolute -top-32 right-0 w-[700px] h-[700px] rounded-full blur-[140px] opacity-40" style={{ background: "oklch(0.74 0.08 130)" }} />
+            <div className="absolute top-1/2 left-[-200px] w-[500px] h-[500px] rounded-full blur-[120px] opacity-20" style={{ background: "oklch(0.47 0.1 128)" }} />
+          </div>
+
           <div className="container mx-auto px-4 md:px-8">
-            <div className="flex flex-col items-center text-center max-w-5xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-8 p-1 rounded-full bg-linear-to-r from-primary/20 via-primary/40 to-primary/20 backdrop-blur-md border border-primary/30 inline-flex items-center gap-2 pr-4"
-              >
-                <span className="bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ml-1">New</span>
-                <span className="text-xs font-medium text-foreground/80">AI-Powered Analytics 2.0 is now live</span>
-                <ArrowRight className="h-3 w-3 text-primary" />
-              </motion.div>
+            <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
 
+              {/* Heading */}
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="text-5xl md:text-8xl font-black tracking-tight leading-[0.9] mb-8 bg-linear-to-b from-foreground via-foreground to-foreground/60 bg-clip-text text-transparent italic"
+                transition={{ duration: 0.75, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+                className="text-5xl md:text-[4.5rem] lg:text-[5rem] font-semibold tracking-tight text-foreground leading-[1.07] mb-6 italic"
+                style={{ fontFamily: "var(--font-poppins)" }}
               >
-                SOCIAL MEDIA <br />
-                <span className="text-primary not-italic">REMASTERED.</span>
+                All Accounts,
+                <br />
+                <span className="text-primary">One Canvas.</span>
               </motion.h1>
 
+              {/* Subtitle */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl leading-relaxed"
+                transition={{ duration: 0.7, delay: 0.2 }}
+                className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed mb-10"
               >
-                The ultimate command center for modern digital architects.
-                Manage, automate, and dominate across every platform.
+                Create, schedule, and analyze content across every platform from one elegant workspace — built for creators, agencies, and enterprise teams.
               </motion.p>
 
+              {/* CTAs */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex flex-col sm:flex-row gap-6 items-center"
+                transition={{ duration: 0.7, delay: 0.3 }}
+                className="flex flex-col sm:flex-row gap-3 items-center mb-12"
               >
-                <Button size="lg" className="h-16 px-10 text-lg font-bold rounded-2xl shadow-xl shadow-primary/30 hover:scale-105 transition-transform active:scale-95">
-                  Launch Command Center
-                  <Rocket className="ml-2 h-5 w-5" />
-                </Button>
-                <Button variant="outline" size="lg" className="h-16 px-10 text-lg rounded-2xl bg-background/50 backdrop-blur border-border/50 hover:bg-muted/50 transition-colors">
-                  View Blueprints
-                </Button>
+                <button className="group h-12 px-7 text-[13px] font-semibold rounded-[10px] bg-primary text-primary-foreground flex items-center gap-2 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200">
+                  Start Free Trial
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </button>
+                <button className="h-12 px-7 text-[13px] font-medium rounded-[10px] border border-border bg-card text-foreground hover:bg-muted/60 transition-colors">
+                  Watch Demo
+                </button>
               </motion.div>
+
             </div>
 
-            {/* Outclass Dashboard Preview */}
-            <motion.div
-              style={{ scale, opacity }}
-              className="mt-24 relative max-w-6xl mx-auto group"
-            >
-              <div className="absolute -inset-1 bg-linear-to-r from-primary/50 via-primary/20 to-primary/50 rounded-[2.5rem] blur-2xl opacity-30 transition duration-1000 group-hover:opacity-50"></div>
-              <div className="relative bg-black/5 dark:bg-white/5 backdrop-blur-3xl rounded-[2rem] border border-white/20 p-4 shadow-2xl shadow-primary/10 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-10 border-b border-white/10 flex items-center px-6 gap-2 bg-white/5">
-                   <div className="flex gap-1.5">
-                     <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                     <div className="w-3 h-3 rounded-full bg-amber-500/50"></div>
-                     <div className="w-3 h-3 rounded-full bg-emerald-500/50"></div>
-                   </div>
-                   <div className="mx-auto text-[10px] text-white/30 font-mono tracking-widest uppercase">dashboard.socialdesk.io</div>
-                </div>
-                <div className="pt-10 aspect-video bg-linear-to-br from-primary/5 via-background to-primary/5 flex items-center justify-center overflow-hidden">
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    <Layout className="h-32 w-32 text-primary/20" />
-                  </motion.div>
-                  {/* Decorative Dashboard Elements */}
-                  <div className="absolute top-20 left-10 w-48 h-32 rounded-xl bg-white/5 border border-white/10 p-4">
-                     <div className="w-full h-2 bg-primary/20 rounded-full mb-3"></div>
-                     <div className="w-2/3 h-2 bg-white/10 rounded-full mb-6"></div>
-                     <div className="flex justify-between items-end h-10">
-                        <div className="w-2 bg-primary/40 rounded-t-sm h-[40%]"></div>
-                        <div className="w-2 bg-primary/60 rounded-t-sm h-[70%]"></div>
-                        <div className="w-2 bg-primary/80 rounded-t-sm h-[90%]"></div>
-                        <div className="w-2 bg-primary/40 rounded-t-sm h-[50%]"></div>
-                     </div>
-                  </div>
-                  <div className="absolute bottom-10 right-10 w-64 h-40 rounded-xl bg-white/5 border border-white/10 p-6 flex flex-col gap-4">
-                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20"></div>
-                        <div className="flex-1 space-y-1.5">
-                           <div className="w-full h-1.5 bg-white/10 rounded-full"></div>
-                           <div className="w-1/2 h-1.5 bg-white/5 rounded-full"></div>
-                        </div>
-                     </div>
-                     <div className="flex-1 bg-white/5 rounded-lg flex items-center justify-center font-mono text-[8px] text-white/20 uppercase tracking-[0.2em]">Live Feed Analytics</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating SVG Animation Elements */}
-              <motion.div
-                animate={{
-                  y: [0, -20, 0],
-                  rotate: [0, 5, 0]
-                }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-12 -right-12 w-24 h-24 bg-primary/20 rounded-full blur-xl mix-blend-screen"
-              />
-              <motion.div
-                animate={{
-                  y: [0, 20, 0],
-                  rotate: [0, -10, 0]
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-16 -left-16 w-32 h-32 bg-primary/10 rounded-full blur-2xl mix-blend-screen"
-              />
-            </motion.div>
+            {/* Dashboard Preview */}
+            <DashboardPreview />
           </div>
         </section>
 
-        {/* Marquee Platform Section */}
-        <section className="py-20 border-y border-white/5 bg-primary/5 backdrop-blur-sm overflow-hidden">
-          <div className="flex gap-16 whitespace-nowrap overflow-hidden group">
+        {/* ── Platform Marquee ─────────────────────────────────────────────── */}
+        <section className="py-14 bg-accent border-y border-border overflow-hidden">
+          <p className="text-center text-xs font-semibold tracking-widest uppercase mb-6" style={{ color: "#181B13" }}>
+            Publish to every platform
+          </p>
+          <div className="flex gap-12 whitespace-nowrap overflow-hidden">
             <motion.div
-              animate={{ x: [0, -1000] }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="flex gap-16 items-center"
+              animate={{ x: [0, -1100] }}
+              transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
+              className="flex gap-12 items-center shrink-0"
             >
-              {[...Array(2)].map((_, i) => (
+              {[...Array(3)].map((_, i) => (
                 <React.Fragment key={i}>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Twitter className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">TWITTER</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Linkedin className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">LINKEDIN</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Instagram className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">INSTAGRAM</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <Facebook className="h-10 w-10" /> <span className="text-3xl font-bold tracking-tighter">FACEBOOK</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                    <svg role="img" viewBox="0 0 24 24" className="h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.966 1.406-5.966s-.359-.72-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg> <span className="text-3xl font-bold tracking-tighter">PINTEREST</span>
-                  </div>
+                  {[
+                    { name: "X / Twitter", svg: <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.732-8.855L1.254 2.25H8.08l4.258 5.626zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> },
+                    { name: "LinkedIn", svg: <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
+                    { name: "Instagram", svg: <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg> },
+                    { name: "Facebook", svg: <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
+                    { name: "Pinterest", svg: <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.966 1.406-5.966s-.359-.72-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg> },
+                    { name: "TikTok", svg: <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg> },
+                  ].map(({ name, svg }) => (
+                    <div key={name + i} className="flex items-center gap-2.5 cursor-default select-none transition-opacity hover:opacity-80" style={{ color: "#181B13" }}>
+                      {svg}
+                      <span className="text-sm font-medium">{name}</span>
+                    </div>
+                  ))}
                 </React.Fragment>
               ))}
             </motion.div>
           </div>
         </section>
 
-        {/* Bento Grid Features */}
-        <section id="features" className="py-40">
+        {/* ── Features — Premium Bento Grid ───────────────────────────────── */}
+        <section id="features" className="py-32">
           <div className="container mx-auto px-4 md:px-8">
             <SectionHeader
-              label="Intelligence"
-              title="Built for the high-frequency creator"
-              subtitle="Proprietary tech that works faster than you can think. Scale your brand across the digital landscape."
+              label="Features"
+              title="Everything your team needs to grow"
+              subtitle="A complete toolkit for modern social media — from AI-powered content creation to real-time analytics and seamless collaboration."
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto md:h-[800px]">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+              {/* Large — AI Engine */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-8 relative rounded-[2.5rem] bg-linear-to-br from-primary/20 via-primary/5 to-primary/20 border border-white/10 overflow-hidden group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -3 }}
+                transition={{ duration: 0.4 }}
+                className="md:col-span-7 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)] overflow-hidden relative group"
               >
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="p-12 h-full flex flex-col">
-                  <div className="h-16 w-16 rounded-2xl bg-primary flex items-center justify-center mb-8 shadow-xl shadow-primary/30">
-                    <Sparkles className="h-8 w-8 text-primary-foreground" />
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative">
+                  <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
+                    <Sparkles className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="text-4xl font-bold mb-4">Neural Post Engine</h3>
-                  <p className="text-lg text-muted-foreground max-w-md">Our AI doesn't just write captions; it understands your brand voice and predicts engagement metrics before you hit send.</p>
-                  <div className="mt-auto pt-12 flex items-center gap-6">
-                    <div className="flex -space-x-4">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">AI Content Engine</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
+                    Our AI understands your brand voice and generates captions, hashtags, and post ideas — optimized for your audience and ideal posting times.
+                  </p>
+                  <div className="mt-8 flex items-center gap-4">
+                    <div className="flex -space-x-2">
                       {[...Array(4)].map((_, i) => (
-                        <div key={i} className="h-12 w-12 rounded-full border-2 border-background bg-muted" />
+                        <div key={i} className="h-7 w-7 rounded-full border-2 border-card bg-accent" />
                       ))}
                     </div>
-                    <span className="text-sm font-medium text-muted-foreground tracking-wide uppercase">Join 12k+ Power Users</span>
+                    <span className="text-xs text-muted-foreground">Trusted by 12,000+ creators</span>
                   </div>
                 </div>
-                <div className="absolute bottom-0 right-0 w-1/2 h-full bg-linear-to-l from-primary/10 to-transparent pointer-events-none" />
+                {/* Decorative ring */}
+                <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full border border-primary/8" />
+                <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full border border-primary/6" />
               </motion.div>
 
+              {/* Small — Analytics */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-4 relative rounded-[2.5rem] bg-card border border-white/10 overflow-hidden p-12 group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.08, duration: 0.4 }}
+                whileHover={{ y: -3 }}
+                className="md:col-span-5 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)] group"
               >
-                <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-8">
-                  <BarChart3 className="h-8 w-8 text-primary" />
+                <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
+                  <BarChart3 className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="text-3xl font-bold mb-4">Real-time <br />Flow State</h3>
-                <p className="text-muted-foreground leading-relaxed">Latency-free analytics that update as the world reacts to your content.</p>
-                <div className="mt-8 h-24 bg-primary/5 rounded-2xl border border-white/5 flex items-center justify-center overflow-hidden">
-                   <motion.div
-                    animate={{ x: [-100, 100] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    className="w-full h-1 bg-linear-to-r from-transparent via-primary/50 to-transparent blur-sm"
-                   />
+                <h3 className="text-xl font-semibold text-foreground mb-3">Real-time Analytics</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+                  Live engagement metrics that update as your audience reacts to your content.
+                </p>
+                {/* Mini bar chart */}
+                <div className="flex items-end gap-1 h-14">
+                  {[40, 58, 44, 72, 53, 84, 68, 90, 62, 78, 95, 72].map((h, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-sm transition-all duration-300"
+                      style={{
+                        height: `${h}%`,
+                        background: i === 10 ? "oklch(0.47 0.1 128)" : "oklch(0.47 0.1 128 / 0.22)",
+                      }}
+                    />
+                  ))}
                 </div>
               </motion.div>
 
+              {/* Small — Scheduling */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-4 relative rounded-[2.5rem] bg-card border border-white/10 overflow-hidden p-12 group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.12, duration: 0.4 }}
+                whileHover={{ y: -3 }}
+                className="md:col-span-4 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)]"
               >
-                <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-8">
-                  <Globe className="h-8 w-8 text-primary" />
+                <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
+                  <Clock className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="text-3xl font-bold mb-4">Global Reach</h3>
-                <p className="text-muted-foreground leading-relaxed">Optimize posting times for every timezone automatically.</p>
+                <h3 className="text-xl font-semibold text-foreground mb-3">Smart Scheduling</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Auto-detect optimal posting times across all timezones for maximum reach and engagement.
+                </p>
               </motion.div>
 
+              {/* Large — Collaboration */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="md:col-span-8 relative rounded-[2.5rem] bg-linear-to-br from-muted via-card to-muted border border-white/10 overflow-hidden p-12 group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.18, duration: 0.4 }}
+                whileHover={{ y: -3 }}
+                className="md:col-span-8 bg-card border border-border rounded-3xl p-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)] overflow-hidden"
               >
-                <div className="flex flex-col md:flex-row gap-12 items-center h-full">
+                <div className="flex flex-col md:flex-row gap-8 items-start h-full">
                   <div className="flex-1">
-                    <div className="h-16 w-16 rounded-2xl bg-primary flex items-center justify-center mb-8 shadow-xl shadow-primary/30">
-                      <Users className="h-8 w-8 text-primary-foreground" />
+                    <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-7">
+                      <Users className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="text-4xl font-bold mb-4">Atomic Approval</h3>
-                    <p className="text-lg text-muted-foreground">The most efficient feedback loop for agencies. One-click approvals from clients.</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-3">Team Collaboration</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Streamlined approval workflows for agencies and teams. Clients review and approve with a single click.
+                    </p>
                   </div>
-                  <div className="flex-1 w-full flex flex-col gap-4">
-                    <div className="h-14 bg-white/5 rounded-xl border border-white/10 flex items-center px-4 justify-between">
-                       <span className="text-sm font-medium">Post Draft #412</span>
-                       <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold uppercase">Pending</span>
-                    </div>
-                    <div className="h-14 bg-white/5 rounded-xl border border-white/10 flex items-center px-4 justify-between translate-x-4">
-                       <span className="text-sm font-medium">Campaign: Summer 24</span>
-                       <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500 font-bold uppercase">Approved</span>
-                    </div>
-                    <div className="h-14 bg-white/5 rounded-xl border border-white/10 flex items-center px-4 justify-between translate-x-8">
-                       <span className="text-sm font-medium">Reels Optimization</span>
-                       <span className="text-[10px] px-2 py-0.5 rounded bg-primary/20 text-primary font-bold uppercase">Ready</span>
-                    </div>
+                  <div className="flex-1 w-full flex flex-col gap-2.5 self-center">
+                    {[
+                      { label: "Campaign Draft #12", status: "Pending", cls: "text-amber-700 bg-amber-50 border-amber-200" },
+                      { label: "Summer Campaign", status: "Approved", cls: "text-emerald-700 bg-emerald-50 border-emerald-200" },
+                      { label: "Q3 Content Plan", status: "Ready", cls: "text-primary bg-primary/8 border-primary/20" },
+                    ].map((item, i) => (
+                      <div key={i} className={`flex items-center justify-between px-4 py-3 rounded-[10px] bg-background border border-border ${i === 1 ? "translate-x-3" : i === 2 ? "translate-x-6" : ""}`}>
+                        <span className="text-sm font-medium text-foreground">{item.label}</span>
+                        <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${item.cls}`}>{item.status}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </motion.div>
@@ -333,181 +285,264 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Workflows with SVG Path Animation */}
-        <section className="py-40 bg-black/5 dark:bg-white/5 relative overflow-hidden">
+        {/* ── How It Works ─────────────────────────────────────────────────── */}
+        <section className="py-32 bg-accent">
           <div className="container mx-auto px-4 md:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div>
                 <motion.span
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
-                  className="text-primary font-bold tracking-widest text-xs uppercase mb-4 block"
+                  viewport={{ once: true }}
+                  className="inline-flex items-center gap-1.5 text-primary font-semibold tracking-wider text-[11px] uppercase mb-6 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15"
                 >
-                  Blueprint
+                  <span className="w-1 h-1 rounded-full bg-primary" />
+                  How it works
                 </motion.span>
-                <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight italic uppercase tracking-tighter">
-                  How we build your <br />
-                  <span className="text-primary not-italic">Empire.</span>
-                </h2>
-                <div className="space-y-12">
+                <motion.h2
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="text-3xl md:text-[2.75rem] font-semibold tracking-tight text-foreground mb-12 leading-[1.15]"
+                >
+                  From setup to scale in three steps.
+                </motion.h2>
+                <div className="space-y-9">
                   {[
-                    { step: "01", title: "Sync the Grid", desc: "One-click OAuth integration with every social protocol. Secure, encrypted, and instantaneous." },
-                    { step: "02", title: "Automate Intent", desc: "Set your strategy and let our AI agents handle the repetitive grunt work." },
-                    { step: "03", title: "Optimize Output", desc: "Analyze the data flow and adjust your trajectory for maximum growth." }
+                    {
+                      step: "01",
+                      title: "Connect your accounts",
+                      desc: "One-click OAuth integration with every major social platform. Secure, encrypted, and instant.",
+                    },
+                    {
+                      step: "02",
+                      title: "Create and schedule",
+                      desc: "Use our AI assistant to craft content and schedule posts at optimal times across all platforms.",
+                    },
+                    {
+                      step: "03",
+                      title: "Analyze and grow",
+                      desc: "Track performance with real-time analytics and adjust your strategy for maximum growth.",
+                    },
                   ].map((item, idx) => (
                     <motion.div
                       key={idx}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -14 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.2 }}
-                      className="flex gap-8 group"
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.12, duration: 0.45 }}
+                      className="flex gap-6 group cursor-default"
                     >
-                      <div className="text-4xl font-black text-primary/20 group-hover:text-primary transition-colors duration-500 shrink-0 select-none">{item.step}</div>
+                      <div className="text-2xl font-bold select-none mt-0.5 transition-colors duration-300 group-hover:text-primary/50" style={{ color: "oklch(0.47 0.1 128 / 0.2)" }}>
+                        {item.step}
+                      </div>
                       <div>
-                        <h4 className="text-xl font-bold mb-2 uppercase tracking-wide group-hover:translate-x-2 transition-transform duration-500">{item.title}</h4>
-                        <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+                        <h4 className="text-base font-semibold text-foreground mb-1.5">{item.title}</h4>
+                        <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
                       </div>
                     </motion.div>
                   ))}
                 </div>
               </div>
-              <div className="relative aspect-square flex items-center justify-center">
-                 <div className="absolute inset-0 bg-primary/5 rounded-full blur-[100px] animate-pulse" />
-                 <svg viewBox="0 0 200 200" className="w-full h-full max-w-md drop-shadow-2xl">
-                    <motion.path
-                      d="M100 20 C140 20 180 60 180 100 C180 140 140 180 100 180 C60 180 20 140 20 100 C20 60 60 20 100 20"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                      className="text-primary/20"
-                    />
-                    <motion.circle
-                      cx="100" cy="20" r="4"
-                      className="fill-primary"
-                      animate={{
-                        offsetDistance: ["0%", "100%"]
-                      }}
-                      transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                      style={{
-                        offsetPath: "path('M100 20 C140 20 180 60 180 100 C180 140 140 180 100 180 C60 180 20 140 20 100 C20 60 60 20 100 20')"
-                      }}
-                    />
-                    <motion.path
-                      d="M40 100 L160 100"
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                      className="text-primary/20"
-                    />
-                    <motion.path
-                      d="M100 40 L100 160"
-                      stroke="currentColor"
-                      strokeWidth="0.5"
-                      className="text-primary/20"
-                    />
-                    <g className="text-primary">
-                      <rect x="85" y="85" width="30" height="30" rx="4" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="1" />
-                      <path d="M100 90 L100 110 M90 100 L110 100" stroke="currentColor" strokeWidth="1" />
-                    </g>
-                 </svg>
+
+              {/* Visual card stack */}
+              <div className="flex items-center justify-center">
+                <div className="w-full max-w-sm bg-card border border-border rounded-3xl p-7 shadow-[0_16px_48px_rgba(0,0,0,0.07)]">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-5">
+                    This week's snapshot
+                  </p>
+                  <div className="space-y-3">
+                    {[
+                      { icon: CheckCircle2, text: "12 posts scheduled across 4 platforms", sub: "Next: Instagram · Today at 3 PM", color: "text-primary" },
+                      { icon: TrendingUp, text: "Engagement up 34% this month", sub: "Highest performing: LinkedIn Carousel", color: "text-chart-2" },
+                      { icon: MessageSquare, text: "28 comments responded to", sub: "Via Engagement inbox · 4 pending", color: "text-chart-4" },
+                    ].map(({ icon: Icon, text, sub, color }, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: 14 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.12 + 0.2 }}
+                        className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-background border border-border"
+                      >
+                        <div className={`mt-0.5 shrink-0 ${color}`}>
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-[13px] font-medium text-foreground">{text}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Pricing Section - Ultra Modern */}
-        <section id="pricing" className="py-40">
+        {/* ── Pricing ──────────────────────────────────────────────────────── */}
+        <section id="pricing" className="py-32">
           <div className="container mx-auto px-4 md:px-8">
             <SectionHeader
               label="Pricing"
-              title="Scale at the speed of thought"
-              subtitle="Choose your tier and unlock the future of social management."
+              title="Simple, transparent pricing"
+              subtitle="Start free and scale as your team grows. No hidden fees, no surprises — cancel anytime."
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
               {[
                 {
-                  name: "SOLO",
+                  name: "Solo",
                   price: "0",
-                  features: ["3 Accounts", "Essential AI", "Daily Analytics"]
+                  period: "Free forever",
+                  desc: "Perfect for individuals getting started with social media.",
+                  features: [
+                    "3 Social accounts",
+                    "30 scheduled posts/month",
+                    "Basic analytics",
+                    "Community support",
+                  ],
+                  cta: "Get started free",
+                  featured: false,
                 },
                 {
-                  name: "ELITE",
+                  name: "Pro",
                   price: "49",
-                  features: ["20 Accounts", "Full AI Suite", "Instant Approvals", "Priority Flow"],
-                  featured: true
+                  period: "per month",
+                  desc: "For growing teams and professional creators.",
+                  features: [
+                    "20 Social accounts",
+                    "Unlimited scheduled posts",
+                    "Advanced analytics & reports",
+                    "Team collaboration & approvals",
+                    "Priority support",
+                  ],
+                  cta: "Start free trial",
+                  featured: true,
                 },
                 {
-                  name: "EMPIRE",
+                  name: "Enterprise",
                   price: "199",
-                  features: ["Unlimited Sync", "Custom AI Models", "White Label Command", "Dedicated Architect"]
-                }
+                  period: "per month",
+                  desc: "For agencies managing multiple brands at scale.",
+                  features: [
+                    "Unlimited accounts",
+                    "Custom AI brand voice models",
+                    "White-label options",
+                    "Dedicated success manager",
+                    "SLA & uptime guarantee",
+                  ],
+                  cta: "Contact sales",
+                  featured: false,
+                },
               ].map((plan, idx) => (
                 <motion.div
                   key={idx}
-                  whileHover={{ y: -10 }}
-                  className={`p-10 rounded-[3rem] border flex flex-col h-full group transition-all duration-500 ${plan.featured ? 'bg-primary text-primary-foreground border-primary shadow-2xl shadow-primary/30' : 'bg-card border-white/5 hover:border-primary/50'}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.08, duration: 0.4 }}
+                  whileHover={{ y: -4 }}
+                  className={`relative p-8 rounded-3xl border flex flex-col transition-all duration-300 ${
+                    plan.featured
+                      ? "bg-primary text-primary-foreground border-primary shadow-[0_24px_60px_rgba(0,0,0,0.12)]"
+                      : "bg-card border-border shadow-[0_8px_30px_rgba(0,0,0,0.05)] hover:border-primary/25"
+                  }`}
                 >
-                  <div className={`text-xs font-black tracking-[0.3em] uppercase mb-12 ${plan.featured ? 'text-primary-foreground/50' : 'text-primary'}`}>{plan.name}</div>
-                  <div className="flex items-baseline gap-2 mb-12">
-                    <span className="text-6xl font-black italic leading-none">${plan.price}</span>
-                    <span className={`text-sm uppercase font-bold tracking-widest ${plan.featured ? 'text-primary-foreground/50' : 'text-muted-foreground'}`}>/mo</span>
+                  {plan.featured && (
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                      <span className="text-[11px] font-semibold px-3.5 py-1 rounded-full bg-card text-primary border border-primary/20 whitespace-nowrap shadow-sm">
+                        Most popular
+                      </span>
+                    </div>
+                  )}
+
+                  <div className={`text-[11px] font-semibold tracking-widest uppercase mb-5 ${plan.featured ? "text-primary-foreground/55" : "text-primary"}`}>
+                    {plan.name}
                   </div>
-                  <div className="space-y-6 flex-grow mb-12">
+
+                  <div className="flex items-baseline gap-1 mb-1.5">
+                    <span className="text-4xl font-bold tracking-tight">${plan.price}</span>
+                    {plan.price !== "0" && (
+                      <span className={`text-sm ${plan.featured ? "text-primary-foreground/55" : "text-muted-foreground"}`}>/mo</span>
+                    )}
+                  </div>
+                  <p className={`text-xs mb-2 ${plan.featured ? "text-primary-foreground/55" : "text-muted-foreground"}`}>
+                    {plan.period}
+                  </p>
+                  <p className={`text-sm mb-7 leading-relaxed ${plan.featured ? "text-primary-foreground/75" : "text-muted-foreground"}`}>
+                    {plan.desc}
+                  </p>
+
+                  <div className="space-y-3 flex-grow mb-8">
                     {plan.features.map((f, i) => (
-                      <div key={i} className="flex items-center gap-4 text-sm font-medium">
-                        <div className={`h-1.5 w-1.5 rounded-full ${plan.featured ? 'bg-primary-foreground' : 'bg-primary'}`} />
-                        {f}
+                      <div key={i} className="flex items-start gap-2.5 text-sm">
+                        <CheckCircle2 className={`h-4 w-4 shrink-0 mt-0.5 ${plan.featured ? "text-primary-foreground/60" : "text-primary"}`} />
+                        <span className={plan.featured ? "text-primary-foreground/85" : "text-foreground/80"}>{f}</span>
                       </div>
                     ))}
                   </div>
-                  <Button
-                    variant={plan.featured ? "secondary" : "default"}
-                    className={`h-16 rounded-2xl font-black uppercase tracking-widest text-xs transition-all duration-500 ${plan.featured ? 'bg-white text-black hover:bg-white/90' : 'group-hover:shadow-lg group-hover:shadow-primary/20'}`}
+
+                  <button
+                    className={`h-11 w-full rounded-[10px] text-[13px] font-semibold transition-all duration-200 ${
+                      plan.featured
+                        ? "bg-white text-primary hover:bg-white/90 shadow-sm"
+                        : "border border-border bg-background text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/15"
+                    }`}
                   >
-                    Select Plan
-                  </Button>
+                    {plan.cta}
+                  </button>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Outclass CTA Section */}
-        <section className="py-40">
+        {/* ── CTA ──────────────────────────────────────────────────────────── */}
+        <section className="py-24">
           <div className="container mx-auto px-4 md:px-8">
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              className="bg-primary rounded-[4rem] p-12 md:p-32 text-center relative overflow-hidden group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="relative bg-accent border border-border rounded-3xl p-12 md:p-20 text-center overflow-hidden"
             >
-              <div className="relative z-10">
-                <h2 className="text-5xl md:text-9xl font-black text-primary-foreground tracking-tighter leading-[0.8] italic uppercase mb-12">
-                  THE FUTURE <br />
-                  <span className="text-black not-italic opacity-80">IS YOURS.</span>
-                </h2>
-                <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12">
-                   <Button size="lg" variant="secondary" className="h-20 px-16 rounded-[2rem] text-xl font-black uppercase tracking-widest bg-white text-black hover:scale-105 transition-transform">
-                      Get Started Now
-                   </Button>
-                   <div className="text-primary-foreground/60 text-sm font-medium tracking-widest flex items-center gap-2">
-                      <Globe className="h-4 w-4" /> NO CREDIT CARD REQUIRED
-                   </div>
-                </div>
+              {/* Ambient gradients */}
+              <div className="absolute inset-0 rounded-3xl pointer-events-none">
+                <div className="absolute top-0 right-0 w-80 h-80 rounded-full blur-[80px] opacity-50" style={{ background: "oklch(0.74 0.08 130 / 0.3)" }} />
+                <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-[80px] opacity-40" style={{ background: "oklch(0.47 0.1 128 / 0.15)" }} />
               </div>
 
-              {/* Massive Decorative SVG Pattern */}
-              <div className="absolute inset-0 pointer-events-none opacity-10 flex items-center justify-center">
-                 <motion.svg
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
-                  viewBox="0 0 100 100" className="w-[150%] h-[150%]"
-                 >
-                    <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.1" strokeDasharray="1 2" />
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="0.1" strokeDasharray="2 1" />
-                    <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" strokeWidth="0.1" />
-                 </motion.svg>
+              <div className="relative z-10">
+                <motion.span
+                  initial={{ opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="inline-flex items-center gap-1.5 text-primary font-semibold tracking-wider text-[11px] uppercase mb-6 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15"
+                >
+                  <span className="w-1 h-1 rounded-full bg-primary" />
+                  Get started today
+                </motion.span>
+
+                <h2 className="text-3xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.15] mb-5">
+                  Ready to manage smarter?
+                </h2>
+                <p className="text-muted-foreground text-base md:text-lg max-w-lg mx-auto mb-10 leading-relaxed">
+                  Join thousands of creators and agencies who save hours every week with Plan My Canvas.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                  <button className="group h-12 px-8 text-[13px] font-semibold rounded-[10px] bg-primary text-primary-foreground flex items-center gap-2 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 transition-all duration-200">
+                    Start for free
+                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </button>
+                  <span className="text-sm text-muted-foreground flex items-center gap-2">
+                    <Globe className="h-4 w-4" />
+                    No credit card required
+                  </span>
+                </div>
               </div>
-              <div className="absolute inset-0 bg-linear-to-tr from-black/20 to-transparent pointer-events-none"></div>
             </motion.div>
           </div>
         </section>

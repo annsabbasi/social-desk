@@ -1,44 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Share2 } from "lucide-react";
+import Image from "next/image";
 import { motion } from "framer-motion";
+
+const navLinks = ["Product", "Pricing", "Integrations", "Help"];
 
 export function Navbar() {
   return (
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-6 pointer-events-none"
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center p-5 pointer-events-none"
     >
-      <div className="container max-w-7xl flex items-center justify-between px-6 py-3 bg-background/60 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl pointer-events-auto">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center transition-transform group-hover:rotate-12">
-            <Share2 className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-black tracking-tighter italic">SocialDesk</span>
-        </Link>
+      <div className="w-full max-w-7xl pointer-events-auto flex flex-col items-center">
+        <div
+          className="w-full relative flex items-center justify-between px-5 h-[52px] backdrop-blur-xl border border-border/70 rounded-[10px] shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
+          style={{ backgroundColor: "#ffffff" }}
+        >
+          {/* Logo */}
+          <Link href="/" className="shrink-0 flex items-center justify-center" aria-label="Go to homepage">
+            <Image src="/logo-icon.png" alt="Plan My Canvas" width={72} height={72} className="object-contain w-[72px] h-[72px]" priority />
+          </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
-          {["Features", "Platforms", "Pricing"].map((item) => (
+          {/* Nav links — centered */}
+          <nav className="hidden md:flex items-center gap-7 absolute left-1/2 -translate-x-1/2">
+            {navLinks.map((item) => (
+              <Link
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
+              >
+                {item}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right side */}
+          <div className="flex items-center gap-5">
             <Link
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-sm font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+              href="#signin"
+              className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
             >
-              {item}
+              Sign In
             </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" className="hidden sm:flex font-bold uppercase tracking-widest text-xs">
-            Log In
-          </Button>
-          <Button className="rounded-full px-6 font-black uppercase tracking-widest text-xs h-10 shadow-lg shadow-primary/20">
-            Get Started
-          </Button>
+            <button className="bg-primary text-primary-foreground rounded-[10px] px-5 py-2 text-[13px] font-semibold whitespace-nowrap hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 transition-all duration-200">
+              Start Free Trial
+            </button>
+          </div>
         </div>
       </div>
     </motion.header>
